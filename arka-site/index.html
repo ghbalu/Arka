@@ -778,19 +778,19 @@ const MEMBER_NAME = {RB:'Ramamurthy Balu', NB:'Nirmala Balu', NANS:'Nandini Balu
 
 // MF data with scheme codes for live NAV
 const MF = [
-  {id:'hdfc_def',  n:'HDFC Defence Fund',             mbr:'NANS', units:49997.5,    avg:10.0005, cost:500000,   sc:151271, cagr:41.96, type:'equity'},
+  {id:'hdfc_def',  n:'HDFC Defence Fund',             mbr:'NANS', units:49997.5,    avg:10.0005, cost:500000,   sc:151751, cagr:41.96, type:'equity'},
   {id:'kotak_mc',  n:'Kotak Mid Cap Fund',             mbr:'NANS', units:51191.702,  avg:91.80,   cost:4699501,  sc:120594, cagr:0,     type:'equity'},
   {id:'canara_sc', n:'Canara Robeco Small Cap',        mbr:'NANS', units:154910.93,  avg:28.40,   cost:4400000,  sc:135781, cagr:15.42, type:'equity'},
   {id:'axis_sc',   n:'Axis Small Cap Fund',            mbr:'NIYU', units:55060.037,  avg:81.72,   cost:4499699,  sc:125354, cagr:0,     type:'equity'},
-  {id:'icici_ma',  n:'ICICI Pru Multi-Asset Fund',    mbr:'NB',   units:27120.404,  avg:719.02,  cost:19500000, sc:120584, cagr:11.26, type:'hybrid'},
-  {id:'bajaj_fc',  n:'Bajaj Finserv Flexi Cap',       mbr:'NANS', units:905161.306, avg:13.26,   cost:12000000, sc:147568, cagr:11.28, type:'equity'},
+  {id:'icici_ma',  n:'ICICI Pru Multi-Asset Fund',    mbr:'NB',   units:27120.404,  avg:719.02,  cost:19500000, sc:101143, cagr:11.26, type:'hybrid'},
+  {id:'bajaj_fc',  n:'Bajaj Finserv Flexi Cap',       mbr:'NANS', units:905161.306, avg:13.26,   cost:12000000, sc:151898, cagr:11.28, type:'equity'},
   {id:'hdfc_arb',  n:'HDFC Arbitrage — Wholesale',    mbr:'RB',   units:636617.191, avg:31.42,   cost:20000000, sc:102885, cagr:5.88,  type:'arb'},
-  {id:'icici_arb', n:'ICICI Pru Equity Arb.',         mbr:'NB',   units:284654.294, avg:35.13,   cost:9999507,  sc:120150, cagr:0,     type:'arb'},
+  {id:'icici_arb', n:'ICICI Pru Equity Arb.',         mbr:'NB',   units:284654.294, avg:35.13,   cost:9999507,  sc:104683, cagr:0,     type:'arb'},
   {id:'nippon_mc', n:'Nippon India Multi Cap',         mbr:'NIYU', units:23790.872,  avg:294.27,  cost:7001000,  sc:118989, cagr:9.73,  type:'equity'},
   {id:'mirae_es',  n:'Mirae Asset Equity Savings',    mbr:'NIYU', units:336055.292, avg:20.83,   cost:7000000,  sc:135800, cagr:2.31,  type:'hybrid'},
   {id:'hdfc_mc',   n:'HDFC Multi Cap Fund',           mbr:'RB',   units:1110433.28, avg:18.46,   cost:20500000, sc:147622, cagr:1.28,  type:'equity'},
   {id:'hdfc_mid',  n:'HDFC Mid Cap Fund',             mbr:'NIYU', units:28515.959,  avg:199.92,  cost:5701000,  sc:100233, cagr:3.27,  type:'equity'},
-  {id:'icici_gilt',n:'ICICI Pru Gilt Fund',           mbr:'NB',   units:103157.397, avg:96.94,   cost:10000000, sc:102858, cagr:5.59,  type:'debt'},
+  {id:'icici_gilt',n:'ICICI Pru Gilt Fund',           mbr:'NB',   units:103157.397, avg:96.94,   cost:10000000, sc:102060, cagr:5.59,  type:'debt'},
   {id:'sbi_gilt',  n:'SBI Gilt Fund',                 mbr:'NANS', units:158162.128, avg:63.22,   cost:9999500,  sc:119775, cagr:0,     type:'debt'},
 ];
 
@@ -1025,7 +1025,16 @@ async function fetchAllNavs() {
       const navMap = {};
       d.forEach(item => {
         const mf = MF.find(m => String(m.sc) === String(item.id));
-        if(mf && item.nav) navMap[mf.id] = {nav: parseFloat(item.nav), date: item.date, isFallback: false};
+        if(mf && item.nav) {
+          // Reject NAVs older than 7 days
+          const navDate = new Date(item.date.split('-').reverse().join('-'));
+          const agedays = (Date.now() - navDate) / 86400000;
+          if(agedays <= 7) {
+            navMap[mf.id] = {nav: parseFloat(item.nav), date: item.date, isFallback: false};
+          } else {
+            console.log('ARKA: Stale NAV rejected for', mf.id, '- date:', item.date);
+          }
+        }
       });
       return navMap;
     }
