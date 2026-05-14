@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ARKA — Wealth, Simplified.</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0D1421;--s1:#080E1A;--s2:#0F1829;--s3:#132033;--s4:#172540;--s5:#1E2F4D;
+  --w:#FFFFFF;--t1:#F4F6F9;--t2:#A8B4C8;--t3:#5E7296;
+  --pk:#E8357A;--pkb:rgba(232,53,122,0.10);--pkd:rgba(232,53,122,0.22);
+  --lm:#D9E04A;--lmb:rgba(217,224,74,0.08);
+  --gn:#2DD884;--gnb:rgba(45,216,132,0.08);
+  --rd:#FF4D6A;--rdb:rgba(255,77,106,0.08);
+  --bl:#3D9BE9;--blb:rgba(61,155,233,0.08);
+  --am:#E8A435;--pu:#9B7FD4;
+  --bd:rgba(255,255,255,0.07);--bd2:rgba(255,255,255,0.13);
+  --sans:"Plus Jakarta Sans",sans-serif;--mono:"DM Mono",monospace;
+  --r:4px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:var(--bg);color:var(--t1);line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100vh;}
+button{font-family:var(--sans);cursor:pointer;}
+.app{display:flex;flex:1;height:100vh;overflow:hidden;}
+.sb{width:224px;flex-shrink:0;background:var(--s2);border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden;}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.sb-logo{padding:1rem;border-bottom:1px solid var(--bd);flex-shrink:0;}
+.sb-scroll{flex:1;overflow-y:auto;overflow-x:hidden;}
+.sb-scroll::-webkit-scrollbar{width:3px;}
+.sb-scroll::-webkit-scrollbar-track{background:transparent;}
+.sb-scroll::-webkit-scrollbar-thumb{background:var(--s5);border-radius:2px;}
+.sb-live{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:0.5rem;color:var(--gn);margin-top:4px;padding:0 0 0.3rem;}
+.sb-live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gn);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.25;}}
+.msw{padding:0.6rem 0.75rem;border-bottom:1px solid var(--bd);}
+.msw-lbl{font-family:var(--mono);font-size:0.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:0.35rem;}
+.mb{display:flex;align-items:center;justify-content:space-between;padding:.35rem .6rem;border-radius:var(--r);font-size:.68rem;font-weight:500;cursor:pointer;border:1px solid transparent;background:rgba(255,255,255,.03);color:var(--t2);transition:all .15s;width:100%;margin-bottom:2px;}
+.mb:hover{background:rgba(255,255,255,.06);color:var(--t1);}
+.mb.on{background:var(--pkb);border-color:var(--pkd);color:var(--w);}
+.mb .mv{font-family:var(--mono);font-size:.56rem;}
+.mb.on .mv{color:var(--lm);}
+.mb-all{border-top:1px solid var(--bd);margin-top:2px;padding-top:4px;}
+.nb{padding:.3rem .5rem;flex:1;}
+.ns{padding:.7rem .9rem .2rem;font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);}
+.ni{display:flex;align-items:center;gap:.55rem;padding:.45rem .7rem;border-radius:var(--r);font-size:.72rem;font-weight:500;color:var(--t2);cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all .15s;margin-bottom:1px;}
+.ni:hover{background:rgba(255,255,255,.04);color:var(--t1);}
+.ni.on{background:var(--pkb);border:1px solid var(--pkd);color:var(--w);}
+.ni.on .ni-ic{color:var(--pk);}
+.ni-ic{font-size:.76rem;width:13px;text-align:center;flex-shrink:0;}
+.ni-badge{margin-left:auto;font-family:var(--mono);font-size:.5rem;padding:1px 5px;background:var(--pkb);color:var(--pk);border-radius:2px;}
+.ni-badge-soon{margin-left:auto;font-family:var(--mono);font-size:.44rem;padding:1px 5px;background:rgba(232,164,53,.1);color:var(--am);border:1px solid rgba(232,164,53,.2);border-radius:2px;}
+.ni-soon{opacity:.65;}
+.sb-bot{margin-top:auto;padding:.85rem;border-top:1px solid var(--bd);}
+.sb-bot-lbl{font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.15rem;}
+.sb-bot-val{font-size:.95rem;font-weight:700;color:var(--w);line-height:1;}
+.sb-bot-pl{font-family:var(--mono);font-size:.56rem;color:var(--gn);margin-top:2px;}
+.live-badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:.48rem;padding:2px 6px;background:var(--gnb);border:1px solid rgba(45,216,132,.2);color:var(--gn);border-radius:2px;margin-top:4px;}
+.topbar{height:44px;background:rgba(13,20,33,.96);border-bottom:1px solid var(--bd);backdrop-filter:blur(12px);display:flex;align-items:center;padding:0 1.4rem;gap:.9rem;flex-shrink:0;z-index:50;}
+.tb-title{font-size:.74rem;font-weight:600;color:var(--t1);}
+.tb-mem{font-family:var(--mono);font-size:.58rem;padding:2px 7px;background:var(--pkb);border:1px solid var(--pkd);color:var(--pk);border-radius:2px;}
+.tb-updated{font-family:var(--mono);font-size:.56rem;color:var(--t3);margin-left:auto;}
+.tb-updated span{color:var(--gn);}
+.tb-refresh{font-family:var(--mono);font-size:.56rem;padding:3px 8px;background:var(--gnb);border:1px solid rgba(45,216,132,.2);color:var(--gn);border-radius:2px;cursor:pointer;transition:all .15s;}
+.tb-refresh:hover{background:rgba(45,216,132,.15);}
+.av{width:26px;height:26px;border-radius:50%;background:var(--pkb);border:1px solid var(--pkd);display:flex;align-items:center;justify-content:center;font-size:.56rem;font-weight:600;color:var(--pk);}
+.ticker-wrap{width:100%;overflow:hidden;height:24px;background:var(--s1);border-top:1px solid var(--bd);display:flex;align-items:center;flex-shrink:0;}
+.ticker-inner{display:flex;animation:tick 60s linear infinite;white-space:nowrap;}
+.ticker-inner:hover{animation-play-state:paused;}
+@keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.tk{display:inline-flex;align-items:center;gap:.35rem;padding:0 1rem;border-right:1px solid var(--bd);font-family:var(--mono);font-size:.58rem;}
+.tk-n{color:var(--t3);}
+.up{color:var(--gn)!important;}
+.dn{color:var(--rd)!important;}
+.neu{color:var(--t2)!important;}
+.pages{flex:1;overflow-y:auto;}
+.page{display:none;padding:1.5rem;}
+.page.on{display:block;}
+.ph{margin-bottom:1.3rem;}
+.ph-ey{font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.3rem;}
+.ph-title{font-size:1.3rem;font-weight:300;color:var(--t1);line-height:1.2;}
+.ph-title strong{font-weight:700;}
+.ph-sub{font-size:.7rem;color:var(--t3);margin-top:.2rem;}
+.ks{display:grid;gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:1.4rem;}
+.kpi{background:var(--s3);padding:.9rem 1rem;position:relative;transition:background .15s;}
+.kpi:hover{background:var(--s4);}
+.kpi-bar{position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi-lbl{font-family:var(--mono);font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.35rem;}
+.kpi-val{font-size:1.3rem;font-weight:700;line-height:1;margin-bottom:.2rem;letter-spacing:-.01em;}
+.kpi-sub{font-family:var(--mono);font-size:.52rem;color:var(--t3);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.2rem;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;margin-bottom:1.2rem;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:1.2rem;}
+.card{background:var(--s3);border:1px solid var(--bd);margin-bottom:1.2rem;}
+.card:last-child{margin-bottom:0;}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;border-bottom:1px solid var(--bd);flex-wrap:wrap;gap:.5rem;}
+.ct{font-size:.64rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--t2);}
+.cs{font-family:var(--mono);font-size:.53rem;color:var(--t3);}
+.cb{padding:1rem;}
+.tbl{width:100%;border-collapse:collapse;font-size:.66rem;}
+.tbl th{font-family:var(--mono);font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);padding:0 .5rem .5rem;border-bottom:1px solid var(--bd);text-align:left;font-weight:400;}
+.tbl th:not(:first-child){text-align:right;}
+.tbl td{padding:.42rem .5rem;border-bottom:1px solid rgba(255,255,255,.025);color:var(--t2);vertical-align:middle;}
+.tbl td:not(:first-child){text-align:right;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(255,255,255,.025);cursor:default;}
+.tbl tfoot tr td{border-top:1px solid var(--bd);background:var(--s4);color:var(--t1);font-weight:600;padding-top:.5rem;}
+.tn{color:var(--t1)!important;font-weight:600;}
+.tmono{font-family:var(--mono)!important;}
+.tup{color:var(--gn)!important;}
+.tdn{color:var(--rd)!important;}
+.tgold{color:var(--lm)!important;}
+.tdim{color:var(--t3)!important;}
+.lpx{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:.5rem;padding:1px 4px;border-radius:2px;}
+.lpx.live{background:var(--gnb);color:var(--gn);border:1px solid rgba(45,216,132,.18);}
+.lpx.last{background:var(--s4);color:var(--t3);border:1px solid var(--bd);}
+.mc{background:var(--s3);padding:1rem;border-bottom:1px solid var(--bd);transition:background .15s;cursor:pointer;}
+.mc:hover{background:var(--s4);}
+.mc-name{font-size:.6rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:.4rem;}
+.mc-val{font-size:1.2rem;font-weight:700;color:var(--w);line-height:1;margin-bottom:.12rem;}
+.mc-pl{font-family:var(--mono);font-size:.58rem;margin-bottom:.35rem;}
+.mc-bar{height:2px;margin-bottom:.35rem;}
+.mc-sub{font-size:.6rem;color:var(--t3);}
+.stat{display:flex;align-items:center;justify-content:space-between;padding:.42rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.68rem;}
+.stat:last-child{border-bottom:none;}
+.sl{color:var(--t2);}
+.sv{font-family:var(--mono);font-size:.64rem;font-weight:500;color:var(--t1);}
+.fbar{display:flex;gap:.25rem;flex-wrap:wrap;margin-bottom:.7rem;align-items:center;}
+.fb{font-size:.57rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;padding:.22rem .7rem;border:1px solid var(--bd);background:transparent;color:var(--t3);cursor:pointer;transition:all .15s;border-radius:2px;}
+.fb:hover{color:var(--t2);}
+.fb.on{border-color:var(--pkd);color:var(--pk);background:var(--pkb);}
+.srch{background:var(--s3);border:1px solid var(--bd);color:var(--t1);padding:.26rem .65rem;font-size:.62rem;font-family:var(--sans);width:165px;outline:none;border-radius:2px;}
+.srch:focus{border-color:var(--bd2);}
+.cbadge{font-family:var(--mono);font-size:.54rem;color:var(--t3);padding:.22rem .55rem;background:var(--s3);border:1px solid var(--bd);border-radius:2px;}
+.ib{padding:.6rem .8rem;border-left:2px solid var(--gn);background:var(--gnb);font-family:var(--mono);font-size:.56rem;color:var(--t2);line-height:1.65;margin-top:.8rem;}
+.ib.warn{border-left-color:var(--rd);background:var(--rdb);}
+.ib.note{border-left-color:var(--lm);background:var(--lmb);}
+.ib.pink{border-left-color:var(--pk);background:var(--pkb);}
+.donut-wrap{display:flex;align-items:center;gap:1.2rem;}
+.dw{position:relative;width:140px;height:140px;flex-shrink:0;}
+.dc{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.dc-v{font-size:.82rem;font-weight:700;color:var(--w);line-height:1;}
+.dc-l{font-family:var(--mono);font-size:.46rem;color:var(--t3);margin-top:2px;}
+.al{display:grid;grid-template-columns:3px 1fr 44px 70px 52px;gap:.5rem;align-items:center;padding:.42rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.al:last-child{border-bottom:none;}
+.al-bar{height:22px;border-radius:1px;}
+.al-nm{font-size:.64rem;color:var(--t2);}
+.al-nm strong{display:block;color:var(--t1);font-weight:600;font-size:.66rem;}
+.al-pct{font-size:.66rem;font-weight:700;text-align:right;}
+.al-val{font-family:var(--mono);font-size:.58rem;color:var(--t1);text-align:right;}
+.al-ret{font-family:var(--mono);font-size:.58rem;text-align:right;}
+.hm-wrap{display:inline-grid;gap:2px;}
+.hm-cell{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:3px;font-family:var(--mono);font-size:.57rem;font-weight:500;cursor:pointer;transition:transform .12s;}
+.hm-cell:hover{transform:scale(1.15);}
+.hm-self{background:var(--s5);color:var(--t3);}
+.hm-c1{background:rgba(45,216,132,.12);color:#2DD884;}
+.hm-c2{background:rgba(45,216,132,.28);color:#2DD884;}
+.hm-c3{background:rgba(217,224,74,.18);color:#D9E04A;}
+.hm-c4{background:rgba(217,224,74,.36);color:#D9E04A;}
+.hm-c5{background:rgba(255,77,106,.18);color:#FF6B80;}
+.hm-c6{background:rgba(255,77,106,.40);color:#FF4D6A;}
+.hm-c7{background:rgba(255,77,106,.65);color:#FF4D6A;}
+.hm-lbl{font-family:var(--mono);font-size:.44rem;color:var(--t2);text-align:right;padding-right:5px;white-space:nowrap;display:flex;align-items:center;justify-content:flex-end;}
+.hm-col{font-family:var(--mono);font-size:.44rem;color:var(--t2);display:flex;align-items:flex-end;justify-content:center;writing-mode:vertical-rl;transform:rotate(180deg);height:62px;white-space:nowrap;}
+#tt{position:fixed;background:#132033;border:1px solid rgba(232,53,122,.3);padding:7px 10px;border-radius:4px;font-family:var(--mono);font-size:.58rem;color:var(--t1);pointer-events:none;z-index:9999;display:none;line-height:1.7;max-width:240px;box-shadow:0 4px 20px rgba(0,0,0,.5);}
+.src{font-family:var(--mono);font-size:.48rem;padding:1px 5px;border-radius:1px;background:var(--gnb);color:var(--gn);border:1px solid rgba(45,216,132,.15);}
+.mbadge{font-family:var(--mono);font-size:.52rem;padding:1px 5px;border-radius:2px;}
+.mbadge.rb{background:rgba(232,164,53,.1);color:var(--am);border:1px solid rgba(232,164,53,.2);}
+.mbadge.nb{background:var(--blb);color:var(--bl);border:1px solid rgba(61,155,233,.2);}
+.mbadge.nans{background:var(--pkb);color:var(--pk);border:1px solid var(--pkd);}
+.mbadge.niyu{background:rgba(155,127,212,.1);color:var(--pu);border:1px solid rgba(155,127,212,.2);}
+/* ── DASHBOARD ── */
+.dash-header{display:flex;align-items:flex-start;justify-content:space-between;padding:1.4rem 1.5rem 1.1rem;background:var(--s3);border:1px solid var(--bd);margin-bottom:1.2rem;}
+.dash-label{font-family:var(--mono);font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.4rem;}
+.dash-total{font-size:2.4rem;font-weight:700;color:var(--w);line-height:1;letter-spacing:-.02em;margin-bottom:.5rem;}
+.dash-meta{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-size:.68rem;color:var(--t2);}
+.dash-meta strong{font-weight:600;}
+.dash-divider{color:var(--s5);}
+.dash-header-right{display:flex;flex-direction:column;align-items:flex-end;gap:.5rem;}
+.dash-status-pill{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.52rem;padding:4px 10px;background:var(--gnb);border:1px solid rgba(45,216,132,.2);color:var(--gn);border-radius:20px;}
+.dash-dot{width:6px;height:6px;border-radius:50%;background:var(--gn);animation:blink 2s infinite;}
+.dash-refresh-btn{font-family:var(--mono);font-size:.54rem;padding:4px 10px;background:transparent;border:1px solid var(--bd);color:var(--t3);border-radius:var(--r);cursor:pointer;transition:all .15s;}
+.dash-refresh-btn:hover{border-color:var(--bd2);color:var(--t2);}
+.dash-cards{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:1.2rem;}
+.dash-card{background:var(--s3);padding:.85rem .9rem 1rem;cursor:pointer;transition:background .15s;position:relative;overflow:hidden;}
+.dash-card:hover{background:var(--s4);}
+.dc-label{font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.45rem;}
+.dc-val{font-size:1.05rem;font-weight:700;color:var(--w);line-height:1;margin-bottom:.22rem;}
+.dc-gain{font-family:var(--mono);font-size:.58rem;margin-bottom:.1rem;}
+.dc-ret{font-family:var(--mono);font-size:.64rem;font-weight:600;}
+.dc-bar{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--s5);}
+.dc-bar-fill{height:100%;background:var(--pk);transition:width .4s;}
+.dash-members{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;}
+.dm-card{background:var(--s3);border:1px solid var(--bd);padding:1.1rem;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;}
+.dm-card:hover{background:var(--s4);border-color:var(--bd2);transform:translateY(-1px);}
+.dm-name{font-size:1.1rem;font-weight:700;color:var(--w);margin-bottom:.15rem;}
+.dm-full{font-size:.6rem;color:var(--t3);margin-bottom:.6rem;}
+.dm-val{font-size:1.3rem;font-weight:700;color:var(--w);line-height:1;margin-bottom:.2rem;}
+.dm-pl{font-family:var(--mono);font-size:.58rem;margin-bottom:.35rem;}
+.dm-accounts{font-family:var(--mono);font-size:.5rem;color:var(--t3);}
+.dm-bar{position:absolute;bottom:0;left:0;height:2px;}
+footer{border-top:1px solid var(--bd);padding:.8rem 1.4rem;display:flex;align-items:center;justify-content:space-between;background:var(--s2);flex-shrink:0;}
+.fn{font-family:var(--mono);font-size:.5rem;color:var(--t3);}
+</style>
+</head>
+<body>
+<div id="tt"></div>
+<div class="app">
+<!-- SIDEBAR -->
+<aside class="sb">
+  <!-- Logo fixed — never scrolls -->
+  <div class="sb-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 90" width="168" height="50">
+      <circle cx="28" cy="38" r="4" fill="#E8357A" opacity=".72"/>
+      <circle cx="68" cy="22" r="6" fill="#E8357A" opacity=".88"/>
+      <circle cx="122" cy="12" r="9" fill="#E8357A"/>
+      <circle cx="176" cy="22" r="6" fill="#E8357A" opacity=".82"/>
+      <circle cx="46" cy="30" r="2.5" fill="#E8357A" opacity=".44"/>
+      <circle cx="94" cy="16" r="2" fill="#E8357A" opacity=".40"/>
+      <circle cx="148" cy="16" r="2" fill="#E8357A" opacity=".38"/>
+      <line x1="28" y1="38" x2="68" y2="22" stroke="#E8357A" stroke-width="2" stroke-linecap="round" opacity=".88"/>
+      <line x1="68" y1="22" x2="122" y2="12" stroke="#E8357A" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="122" y1="12" x2="176" y2="22" stroke="#E8357A" stroke-width="2" stroke-linecap="round" opacity=".88"/>
+      <line x1="28" y1="38" x2="46" y2="30" stroke="#E8357A" stroke-width="1" stroke-linecap="round" opacity=".4"/>
+      <line x1="68" y1="22" x2="94" y2="16" stroke="#E8357A" stroke-width="1" stroke-linecap="round" opacity=".38"/>
+      <line x1="122" y1="12" x2="148" y2="16" stroke="#E8357A" stroke-width="1" stroke-linecap="round" opacity=".35"/>
+      <circle cx="122" cy="12" r="16" fill="none" stroke="#E8357A" stroke-width=".6" opacity=".14"/>
+      <text x="14" y="66" font-family="Plus Jakarta Sans,Arial,sans-serif" font-size="36" font-weight="700" fill="#FFF" letter-spacing="10">ARKA</text>
+      <text x="14" y="83" font-family="DM Mono,monospace" font-size="9" font-weight="700" fill="#FFF" letter-spacing=".5" opacity=".8">Wealth, Simplified.</text>
+    </svg>
+    <div class="sb-live" id="liveStatus">Statement prices · 07 May 2026</div>
+  </div>
+
+  <!-- Scrollable section -->
+  <div class="sb-scroll">
+
+    <!-- 1. Overview / Dashboard -->
+    <div class="nb">
+      <div class="ns">Overview</div>
+      <button class="ni on" onclick="nav('dashboard',this,'Dashboard')"><span class="ni-ic">◈</span>Dashboard</button>
+    </div>
+
+    <!-- 2. View Portfolio (member switcher) -->
+    <div class="msw">
+      <div class="msw-lbl">View portfolio</div>
+      <button class="mb on" onclick="setMem('RB',this)"><span>RB (You)</span><span class="mv" id="mv-RB">—</span></button>
+      <button class="mb"    onclick="setMem('NB',this)"><span>NB</span><span class="mv" id="mv-NB">—</span></button>
+      <button class="mb"    onclick="setMem('NANS',this)"><span>NANS</span><span class="mv" id="mv-NANS">—</span></button>
+      <button class="mb"    onclick="setMem('NIYU',this)"><span>NIYU</span><span class="mv" id="mv-NIYU">—</span></button>
+      <button class="mb mb-all" onclick="setMem('FAM',this)"><span>Family Total</span><span class="mv" id="mv-FAM">—</span></button>
+    </div>
+
+    <!-- 3. Equity: PMS → Direct Equity → International -->
+    <div class="nb">
+      <div class="ns">Equity</div>
+      <button class="ni" onclick="nav('bt',this,'Banyan Tree PMS')"><span class="ni-ic">◉</span>Banyan Tree PMS<span class="ni-badge">23</span></button>
+      <button class="ni" onclick="nav('emg',this,'Abakkus Emerging')"><span class="ni-ic">◫</span>Abakkus Emerging<span class="ni-badge">36</span></button>
+      <button class="ni" onclick="nav('alpha',this,'Abakkus Alpha')"><span class="ni-ic">◫</span>Abakkus Alpha<span class="ni-badge">40</span></button>
+      <button class="ni" onclick="nav('carn',this,'Carnelian Shift')"><span class="ni-ic">◫</span>Carnelian Shift<span class="ni-badge">32</span></button>
+      <button class="ni" onclick="nav('hdfc',this,'HDFC Securities')"><span class="ni-ic">▦</span>HDFC Securities<span class="ni-badge">5</span></button>
+      <button class="ni" onclick="nav('equity',this,'Direct Equity')"><span class="ni-ic">▦</span>Direct Equity<span class="ni-badge">50+</span></button>
+      <button class="ni" onclick="nav('intl',this,'International')"><span class="ni-ic">◉</span>International</button>
+    </div>
+
+    <!-- 4. MF: Equity MF → Arbitrage → All MF -->
+    <div class="nb">
+      <div class="ns">Mutual Funds</div>
+      <button class="ni" onclick="nav('mf',this,'Equity MF')"><span class="ni-ic">◫</span>Equity MF</button>
+      <button class="ni" onclick="nav('arbmf',this,'Arbitrage MF')"><span class="ni-ic">◫</span>Arbitrage MF</button>
+      <button class="ni" onclick="nav('rbmf',this,'RB Prudent MF')"><span class="ni-ic">⊞</span>RB Prudent MF</button>
+      <button class="ni" onclick="nav('allmf',this,'All MF Schemes')"><span class="ni-ic">◻</span>All MF Schemes</button>
+    </div>
+
+    <!-- 5. Debt: Gilt → Gold → Cash -->
+    <div class="nb">
+      <div class="ns">Debt & Alternatives</div>
+      <button class="ni" onclick="nav('debt',this,'Gilt Funds')"><span class="ni-ic">◻</span>Gilt Funds</button>
+      <button class="ni" onclick="nav('gold',this,'Gold ETF')"><span class="ni-ic">◈</span>Gold ETF</button>
+      <button class="ni" onclick="nav('cash',this,'Cash in PMS')"><span class="ni-ic">◻</span>Cash in PMS</button>
+    </div>
+
+    <!-- 6. Accounts: RB → NB → NANS → NIYU → Family -->
+    <div class="nb">
+      <div class="ns">Accounts</div>
+      <button class="ni" onclick="nav('acc_rb',this,'RB — All Accounts')"><span class="ni-ic">⊞</span>RB</button>
+      <button class="ni" onclick="nav('acc_nb',this,'NB — All Accounts')"><span class="ni-ic">⊞</span>NB</button>
+      <button class="ni" onclick="nav('acc_nans',this,'NANS — All Accounts')"><span class="ni-ic">⊞</span>NANS</button>
+      <button class="ni" onclick="nav('acc_niyu',this,'NIYU — All Accounts')"><span class="ni-ic">⊞</span>NIYU</button>
+      <button class="ni" onclick="nav('family',this,'Family Overview')"><span class="ni-ic">⊞</span>Family Overview</button>
+    </div>
+
+    <!-- 7. Analysis & Reports -->
+    <div class="nb">
+      <div class="ns">Analysis</div>
+      <button class="ni" onclick="nav('universe',this,'MF Universe')"><span class="ni-ic">⊞</span>MF Universe</button>
+      <button class="ni ni-soon" onclick="nav('analysis',this,'Analysis')"><span class="ni-ic">◈</span>Analysis<span class="ni-badge-soon">Soon</span></button>
+      <button class="ni" onclick="nav('reports',this,'Reports & P&L')"><span class="ni-ic">≡</span>Reports & P&L</button>
+    </div>
+
+  </div><!-- /sb-scroll -->
+
+  <!-- Bottom — fixed -->
+  <div class="sb-bot">
+    <div class="sb-bot-lbl" id="sb-lbl">Portfolio</div>
+    <div class="sb-bot-val" id="sb-val">—</div>
+    <div class="sb-bot-pl"  id="sb-pl">—</div>
+    <div class="live-badge" id="live-badge-bot">✓ Statement · 07 May 2026</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-title" id="tb-title">Dashboard</div>
+    <div class="tb-mem"   id="tb-mem">Ramamurthy Balu</div>
+    <div class="tb-updated">Updated: <span id="tb-time">—</span></div>
+    <button class="tb-refresh" onclick="fetchAllPrices()">↻ Refresh</button>
+    <button id="hdfc-topbar-btn" onclick="startHDFCLogin()" style="font-family:var(--mono);font-size:.54rem;padding:3px 10px;background:var(--pkb);border:1px solid var(--pkd);color:var(--pk);border-radius:var(--r);cursor:pointer;letter-spacing:.04em;">⚡ Connect Live</button>
+    <div class="av" title="Ramamurthy Balu · RV Family">RB</div>
+  </div>
+  <div class="pages" id="pages">
+
+  <!-- DASHBOARD -->
+  <div class="page on" id="p-dashboard">
+
+    <!-- ── FAMILY TOTAL HEADER ── -->
+    <div class="dash-header">
+      <div class="dash-header-left">
+        <div class="dash-label">Family Portfolio · All 17 Accounts · <span id="dash-date"></span></div>
+        <div class="dash-total" id="dash-total">₹36.29 Cr</div>
+        <div class="dash-meta">
+          <span>Invested <strong id="dash-cost">₹30.74 Cr</strong></span>
+          <span class="dash-divider">·</span>
+          <span>Overall gain <strong class="up" id="dash-gain">+₹5.55 Cr</strong></span>
+          <span class="dash-divider">·</span>
+          <span class="up" id="dash-pct">+18.0%</span>
+          <span class="dash-divider">·</span>
+          <span id="dash-today-wrap">Today <strong id="dash-today" class="neu">—</strong></span>
+        </div>
+      </div>
+      <div class="dash-header-right">
+        <div class="dash-status-pill" id="dash-status-pill">
+          <span class="dash-dot"></span>
+          <span id="dash-status-txt">Statement · 07 May 2026</span>
+        </div>
+        <button class="dash-refresh-btn" onclick="fetchAllPrices()">↻ Refresh</button>
+      </div>
+    </div>
+
+    <!-- ── ASSET CLASS SUMMARY CARDS ── -->
+    <div class="dash-cards" id="dash-cards">
+      <div class="dash-card" onclick="nav('bt',document.querySelector('.ni'),'')" id="dc-pms">
+        <div class="dc-label">Equity PMS</div>
+        <div class="dc-val" id="dc-pms-val">₹9.87 Cr</div>
+        <div class="dc-gain up" id="dc-pms-gain">+₹2.40 Cr</div>
+        <div class="dc-ret up" id="dc-pms-ret">+32.1%</div>
+        <div class="dc-bar"><div class="dc-bar-fill" id="dc-pms-bar" style="width:27%"></div></div>
+      </div>
+      <div class="dash-card" onclick="nav('equity',document.querySelector('.ni'),'')" id="dc-eq">
+        <div class="dc-label">Direct Equity</div>
+        <div class="dc-val" id="dc-eq-val">—</div>
+        <div class="dc-gain" id="dc-eq-gain">—</div>
+        <div class="dc-ret" id="dc-eq-ret">—</div>
+        <div class="dc-bar"><div class="dc-bar-fill" id="dc-eq-bar" style="width:20%"></div></div>
+      </div>
+      <div class="dash-card" onclick="nav('mf',document.querySelector('.ni'),'')" id="dc-mf">
+        <div class="dc-label">Mutual Funds</div>
+        <div class="dc-val" id="dc-mf-val">—</div>
+        <div class="dc-gain" id="dc-mf-gain">—</div>
+        <div class="dc-ret" id="dc-mf-ret">—</div>
+        <div class="dc-bar"><div class="dc-bar-fill" id="dc-mf-bar" style="width:30%"></div></div>
+      </div>
+      <div class="dash-card" onclick="nav('debt',document.querySelector('.ni'),'')" id="dc-debt">
+        <div class="dc-label">Debt · Gilt</div>
+        <div class="dc-val" id="dc-debt-val">—</div>
+        <div class="dc-gain" id="dc-debt-gain">—</div>
+        <div class="dc-ret" id="dc-debt-ret">—</div>
+        <div class="dc-bar"><div class="dc-bar-fill" id="dc-debt-bar" style="width:6%"></div></div>
+      </div>
+      <div class="dash-card" onclick="nav('gold',document.querySelector('.ni'),'')" id="dc-gold">
+        <div class="dc-label">Gold ETF</div>
+        <div class="dc-val" id="dc-gold-val">—</div>
+        <div class="dc-gain" id="dc-gold-gain">—</div>
+        <div class="dc-ret" id="dc-gold-ret">—</div>
+        <div class="dc-bar"><div class="dc-bar-fill" id="dc-gold-bar" style="width:3%"></div></div>
+      </div>
+      <div class="dash-card" onclick="nav('intl',document.querySelector('.ni'),'')" id="dc-intl">
+        <div class="dc-label">International</div>
+        <div class="dc-val" id="dc-intl-val">₹1.37 Cr</div>
+        <div class="dc-gain up" id="dc-intl-gain">+₹9.1L</div>
+        <div class="dc-ret up" id="dc-intl-ret">+7.1%</div>
+        <div class="dc-bar"><div class="dc-bar-fill" id="dc-intl-bar" style="width:4%"></div></div>
+      </div>
+    </div>
+
+    <!-- ── MAIN ASSET CLASS TABLE ── -->
+    <div class="card" style="margin-bottom:1.2rem">
+      <div class="ch">
+        <span class="ct">Asset class breakdown</span>
+        <div style="display:flex;gap:.5rem;align-items:center">
+          <span class="src" id="dash-nav-src">Statement · 07 May 2026</span>
+          <div style="display:flex;gap:3px">
+            <button class="fb on" id="dash-fam-btn" onclick="dashView('FAM',this)">Family</button>
+            <button class="fb" onclick="dashView('RB',this)">RB</button>
+            <button class="fb" onclick="dashView('NB',this)">NB</button>
+            <button class="fb" onclick="dashView('NANS',this)">NANS</button>
+            <button class="fb" onclick="dashView('NIYU',this)">NIYU</button>
+          </div>
+        </div>
+      </div>
+      <div class="cb" style="padding:0">
+        <table class="tbl" id="dash-tbl">
+          <thead><tr>
+            <th style="padding-left:1rem;width:20%">Asset class</th>
+            <th>Accounts</th>
+            <th>Invested</th>
+            <th>Current value</th>
+            <th>Today's gain</th>
+            <th>Unrealised gain</th>
+            <th>Return</th>
+            <th>Weight</th>
+          </tr></thead>
+          <tbody id="dash-tbody"></tbody>
+          <tfoot><tr class="tot" id="dash-tfoot">
+            <td style="padding-left:1rem">Family Total</td>
+            <td>17 accounts</td>
+            <td id="dash-tf-cost">₹30.74 Cr</td>
+            <td class="tgold" id="dash-tf-val">—</td>
+            <td id="dash-tf-today">—</td>
+            <td class="tup" id="dash-tf-pl">—</td>
+            <td class="tup" id="dash-tf-ret">—</td>
+            <td id="dash-tf-wt">100%</td>
+          </tr></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── MEMBER CARDS (click to drill down) ── -->
+    <div class="dash-members" id="dash-members">
+      <div class="dm-card" onclick="setMem('RB',document.querySelectorAll('.mb')[0]);nav('acc_rb',null,'RB Accounts')">
+        <div class="dm-name">RB</div>
+        <div class="dm-full">Ramamurthy Balu</div>
+        <div class="dm-val" id="dm-rb-val">₹18.99 Cr</div>
+        <div class="dm-pl up" id="dm-rb-pl">+₹3.17 Cr · +20.0%</div>
+        <div class="dm-accounts">7 accounts</div>
+        <div class="dm-bar" style="background:var(--pk);width:52%"></div>
+      </div>
+      <div class="dm-card" onclick="setMem('NB',document.querySelectorAll('.mb')[1]);nav('acc_nb',null,'NB Accounts')">
+        <div class="dm-name">NB</div>
+        <div class="dm-full">Nirmala Balu</div>
+        <div class="dm-val" id="dm-nb-val">₹9.78 Cr</div>
+        <div class="dm-pl up" id="dm-nb-pl">+₹1.98 Cr · +25.4%</div>
+        <div class="dm-accounts">5 accounts</div>
+        <div class="dm-bar" style="background:var(--bl);width:27%"></div>
+      </div>
+      <div class="dm-card" onclick="setMem('NANS',document.querySelectorAll('.mb')[2]);nav('acc_nans',null,'NANS Accounts')">
+        <div class="dm-name">NANS</div>
+        <div class="dm-full">Nandini Balu</div>
+        <div class="dm-val" id="dm-nans-val">₹4.91 Cr</div>
+        <div class="dm-pl up" id="dm-nans-pl">+₹865L · +21.4%</div>
+        <div class="dm-accounts">3 accounts</div>
+        <div class="dm-bar" style="background:var(--lm);width:13%"></div>
+      </div>
+      <div class="dm-card" onclick="setMem('NIYU',document.querySelectorAll('.mb')[3]);nav('acc_niyu',null,'NIYU Accounts')">
+        <div class="dm-name">NIYU</div>
+        <div class="dm-full">Niyati Balu</div>
+        <div class="dm-val" id="dm-niyu-val">₹2.61 Cr</div>
+        <div class="dm-pl up" id="dm-niyu-pl">+₹40.7L · +18.5%</div>
+        <div class="dm-accounts">2 accounts</div>
+        <div class="dm-bar" style="background:var(--pu);width:7%"></div>
+      </div>
+    </div>
+
+  </div>
+
+<!-- EQUITY -->
+  <div class="page" id="p-equity">
+    <div class="ph"><div class="ph-ey">Direct Equity · All Accounts · Live NSE</div><div class="ph-title"><strong>Key direct equity holdings</strong></div><div class="ph-sub">HDFC Sec + Banyan Tree + Abakkus + Carnelian (RB) · Axis Direct + Abakkus + Banyan Tree (NB) · Banyan Tree (NANS)</div></div>
+    <div class="ks" style="grid-template-columns:repeat(5,1fr)">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--lm)"></div><div class="kpi-lbl">Total equity</div><div class="kpi-val" style="color:var(--lm)" id="eq-total">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Unrealised P/L</div><div class="kpi-val" style="color:var(--gn)" id="eq-pl">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Gainers</div><div class="kpi-val" style="color:var(--gn)" id="eq-gn">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--rd)"></div><div class="kpi-lbl">Losers</div><div class="kpi-val" style="color:var(--rd)" id="eq-ls">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--am)"></div><div class="kpi-lbl">Best return</div><div class="kpi-val" style="color:var(--am)" id="eq-best">—</div></div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">Holdings</span>
+        <div class="fbar" style="margin:0">
+          <button class="fb on" onclick="setEF('all',this)">All</button>
+          <button class="fb" onclick="setEF('gain',this)">Gainers</button>
+          <button class="fb" onclick="setEF('loss',this)">Losers</button>
+          <button class="fb" onclick="setEF('top20',this)">Top 20</button>
+          <button class="fb" onclick="setEF('RB',this)">RB</button>
+          <button class="fb" onclick="setEF('NB',this)">NB</button>
+          <input class="srch" type="text" id="eq-srch" placeholder="Search stock..." oninput="renderEq()"/>
+          <span class="cbadge" id="eq-cnt">—</span>
+        </div>
+      </div>
+      <div class="cb" style="padding:0"><table class="tbl"><thead><tr>
+        <th style="padding-left:.9rem;width:22%">Stock</th><th>Account</th><th>Qty</th><th>Avg cost</th><th>Live price</th><th>Invested</th><th>Current</th><th>P/L</th><th>Return</th>
+      </tr></thead><tbody id="eq-body"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- MF -->
+  <div class="page" id="p-mf">
+    <div class="ph"><div class="ph-ey">Mutual Funds · All 14 Schemes · Live NAVs</div><div class="ph-title"><strong>14 schemes</strong> — live NAVs via mfapi.in</div><div class="ph-sub">Prudent FundsBazar + Axis Bank MF · All 4 members · Updates daily after 9pm</div></div>
+    <div class="ks" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--bl)"></div><div class="kpi-lbl">Total MF value</div><div class="kpi-val" style="color:var(--bl)" id="mf-total">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Total P/L</div><div class="kpi-val" style="color:var(--gn)" id="mf-pl">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--lm)"></div><div class="kpi-lbl">Best — HDFC Defence</div><div class="kpi-val" style="color:var(--lm)" id="mf-best">—</div><div class="kpi-sub">CAGR 41.96%</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--t3)"></div><div class="kpi-lbl">NAV status</div><div class="kpi-val" style="color:var(--t2)" id="mf-status">Loading...</div></div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">All 14 schemes</span>
+        <div class="fbar" style="margin:0">
+          <button class="fb on" onclick="setMFF('all',this)">All (14)</button>
+          <button class="fb" onclick="setMFF('equity',this)">Equity</button>
+          <button class="fb" onclick="setMFF('debt',this)">Debt/Arb</button>
+          <button class="fb" onclick="setMFF('gain',this)">Gainers</button>
+          <button class="fb" onclick="setMFF('loss',this)">Losers</button>
+        </div>
+      </div>
+      <div class="cb" style="padding:0"><table class="tbl"><thead><tr>
+        <th style="padding-left:.9rem;width:30%">Fund</th><th>Member</th><th>Units</th><th>Avg NAV</th><th>Live NAV</th><th>Invested</th><th>Current</th><th>P/L</th><th>Return</th><th>CAGR</th>
+      </tr></thead><tbody id="mf-body"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- DEBT -->
+  <div class="page" id="p-debt">
+    <div class="ph"><div class="ph-ey">Debt MF · Gilt Funds · NB + NANS</div><div class="ph-title">Fixed income, <strong>clearly tracked</strong></div><div class="ph-sub">ICICI Pru Gilt (NB) · SBI Gilt (NANS) · Government securities · Zero credit risk</div></div>
+    <div class="ks" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--t3)"></div><div class="kpi-lbl">Total gilt value</div><div class="kpi-val" style="color:var(--t2)" id="debt-total">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">ICICI Pru Gilt (NB)</div><div class="kpi-val" style="color:var(--gn)" id="debt-icici">—</div><div class="kpi-sub" id="debt-icici-r">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">SBI Gilt (NANS)</div><div class="kpi-val" style="color:var(--gn)" id="debt-sbi">—</div><div class="kpi-sub" id="debt-sbi-r">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--bl)"></div><div class="kpi-lbl">Total gain</div><div class="kpi-val" style="color:var(--bl)" id="debt-pl">—</div></div>
+    </div>
+    <div class="card"><div class="ch"><span class="ct">Gilt fund details</span><span class="src">Live NAV · mfapi.in</span></div>
+    <div class="cb" style="padding:0"><table class="tbl"><thead><tr><th style="padding-left:.9rem;width:32%">Fund</th><th>Member</th><th>Units</th><th>Avg NAV</th><th>Live NAV</th><th>Invested</th><th>Current</th><th>P/L</th><th>Return</th><th>CAGR</th></tr></thead><tbody id="debt-body"></tbody></table></div></div>
+    <div class="ib warn" style="margin-top:0">Gilt funds move inversely to interest rates. Both funds invest exclusively in Government of India securities — zero default risk.</div>
+  </div>
+
+  <!-- GOLD -->
+  <div class="page" id="p-gold">
+    <div class="ph"><div class="ph-ey">Gold ETF · Nippon India Gold BeES · RB · HDFC Securities</div><div class="ph-title">Gold, <strong>precisely tracked</strong></div><div class="ph-sub">1,00,000 units · Avg cost ₹91.91 · NSE: GOLDBEES · 99.5% pure · ~1 kg equivalent</div></div>
+    <div class="ks" style="grid-template-columns:repeat(5,1fr)">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--am)"></div><div class="kpi-lbl">Current value</div><div class="kpi-val" style="color:var(--am)" id="gold-val">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--lm)"></div><div class="kpi-lbl">Live price</div><div class="kpi-val" style="color:var(--lm)" id="gold-price">—</div><div class="kpi-sub" id="gold-chg">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Unrealised gain</div><div class="kpi-val" style="color:var(--gn)" id="gold-pl">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Return</div><div class="kpi-val" style="color:var(--gn)" id="gold-ret">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--t3)"></div><div class="kpi-lbl">Units held</div><div class="kpi-val" style="color:var(--t2)">1,00,000</div><div class="kpi-sub">Avg ₹91.91</div></div>
+    </div>
+    <div class="g2">
+      <div class="card" style="margin:0"><div class="ch"><span class="ct">Holding details</span><span class="src">HDFC Sec · Live</span></div><div class="cb" style="padding:.6rem 1rem" id="gold-stats"></div></div>
+      <div class="card" style="margin:0"><div class="ch"><span class="ct">Gold vs portfolio</span></div><div class="cb" style="padding:.6rem 1rem" id="gold-vs"></div></div>
+    </div>
+  </div>
+
+  <!-- MF UNIVERSE -->
+  <div class="page" id="p-universe">
+    <div class="ph"><div class="ph-ey">MF Universe · Cross-Holding Analysis</div><div class="ph-title">How your <strong>14 MFs overlap</strong></div><div class="ph-sub">Inter-fund heatmap · MF vs direct equity · Hover for detail</div></div>
+    <div class="ks" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--bl)"></div><div class="kpi-lbl">MF schemes</div><div class="kpi-val" style="color:var(--bl)">14</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--lm)"></div><div class="kpi-lbl">Direct stocks</div><div class="kpi-val" style="color:var(--lm)">131</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--rd)"></div><div class="kpi-lbl">Highest overlap pair</div><div class="kpi-val" style="color:var(--rd)">77 stocks</div><div class="kpi-sub">HDFC Arb ↔ ICICI Arb</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Your pure alpha</div><div class="kpi-val" style="color:var(--gn)">73 stocks</div><div class="kpi-sub">Not in any MF</div></div>
+    </div>
+    <div class="g2">
+      <div class="card" style="margin:0"><div class="ch"><span class="ct">Inter-fund heatmap</span><span class="cs">Hover cells for detail</span></div><div class="cb" style="overflow-x:auto;padding:.8rem">
+        <div id="hm-grid"></div>
+        <div style="display:flex;gap:.5rem;align-items:center;margin-top:.8rem;font-family:var(--mono);font-size:.52rem;color:var(--t3)">
+          Low <span style="display:flex;gap:2px">
+            <span style="width:12px;height:7px;display:inline-block;border-radius:1px;background:rgba(45,216,132,.12)"></span>
+            <span style="width:12px;height:7px;display:inline-block;border-radius:1px;background:rgba(45,216,132,.28)"></span>
+            <span style="width:12px;height:7px;display:inline-block;border-radius:1px;background:rgba(217,224,74,.36)"></span>
+            <span style="width:12px;height:7px;display:inline-block;border-radius:1px;background:rgba(255,77,106,.40)"></span>
+            <span style="width:12px;height:7px;display:inline-block;border-radius:1px;background:rgba(255,77,106,.65)"></span>
+          </span> High overlap
+        </div>
+        <div class="ib warn" style="margin-top:.8rem">HDFC Arb (RB) ↔ ICICI Pru Arb (NB): <strong style="color:var(--rd)">~77 common stocks</strong> — near-identical. Consider consolidating.</div>
+      </div></div>
+      <div class="card" style="margin:0"><div class="ch"><span class="ct">Direct equity vs MF overlap</span></div><div class="cb" style="padding:.65rem 1rem">
+        <div style="font-family:var(--mono);font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.6rem">Overlap Summary</div>
+        <div class="stat"><span class="sl">Direct stocks also in MFs</span><span class="sv" style="color:var(--rd)">~58 (44%)</span></div>
+        <div class="stat"><span class="sl">Pure alpha — direct only</span><span class="sv" style="color:var(--gn)">~73 (56%)</span></div>
+        <div class="stat"><span class="sl">MF-only new exposure</span><span class="sv" style="color:var(--bl)">~85 stocks</span></div>
+        <div style="font-family:var(--mono);font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:.8rem 0 .5rem">Pure alpha — not in any MF</div>
+        <div class="stat"><span class="sl">Sarda Energy</span><span class="sv up">+289.9%</span></div>
+        <div class="stat"><span class="sl">Titagarh Rail</span><span class="sv up">+280.6%</span></div>
+        <div class="stat"><span class="sl">Anup Engineering</span><span class="sv up">+238.3%</span></div>
+        <div class="stat"><span class="sl">Shaily Engineering</span><span class="sv up">+234.7%</span></div>
+        <div class="ib note" style="margin-top:.8rem">Your best performers are all pure alpha — no MF has replicated them.</div>
+      </div></div>
+    </div>
+    <div class="card"><div class="ch"><span class="ct">MF overlap vs your direct stocks</span><span class="cs">Hover bars for detail</span></div><div class="cb" id="ub-chart" style="padding:1rem"></div></div>
+  </div>
+
+  <!-- HDFC SEC -->
+  <div class="page" id="p-hdfc">
+    <div class="ph"><div class="ph-ey">HDFC Securities · Direct Equity + Gold ETF · RB</div><div class="ph-title"><strong>5 holdings</strong></div><div class="ph-sub" id="hdfc-sub">Loading live prices...</div></div>
+    <div class="ks" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--lm)"></div><div class="kpi-lbl">Current value</div><div class="kpi-val" style="color:var(--lm)" id="hdfc-val">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Unrealised return</div><div class="kpi-val" style="color:var(--gn)" id="hdfc-ret">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--am)"></div><div class="kpi-lbl">Top gainer</div><div class="kpi-val" style="color:var(--am)" id="hdfc-best">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--t3)"></div><div class="kpi-lbl">Realised P/L</div><div class="kpi-val" style="color:var(--t2)">+₹17.7L</div></div>
+    </div>
+    <div class="card"><div class="ch"><span class="ct">Holdings</span><span class="src">HDFC Sec · Live NSE</span></div>
+    <div class="cb" style="padding:0"><table class="tbl"><thead><tr><th style="padding-left:.9rem;width:24%">Stock</th><th>Qty</th><th>Avg cost</th><th>Live price</th><th>Change</th><th>Invested</th><th>Current</th><th>P/L</th><th>Return</th></tr></thead><tbody id="hdfc-body"></tbody></table></div></div>
+  </div>
+
+  <!-- PMS PAGES (static statement data) -->
+  <div class="page" id="p-bt">
+    <div class="ph"><div class="ph-ey">Banyan Tree Advisors PMS · RB</div><div class="ph-title"><strong>23 stocks</strong></div><div class="ph-sub">₹2.21 Cr · Invested ₹1.72 Cr · +₹49.5L (+28.8%) · Statement: 07 May 2026</div></div>
+    <div class="ks" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Current value</div><div class="kpi-val" style="color:var(--gn)">₹2.21 Cr</div><div class="kpi-sub up">+₹49.5L (+28.8%)</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--lm)"></div><div class="kpi-lbl">Top gainer</div><div class="kpi-val" style="color:var(--lm)">HDFC AMC +228.6%</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--rd)"></div><div class="kpi-lbl">Top loser</div><div class="kpi-val" style="color:var(--rd)">IEX -9.1%</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--t3)"></div><div class="kpi-lbl">Cash</div><div class="kpi-val" style="color:var(--t2)">₹6.83L</div></div>
+    </div>
+    <div class="card"><div class="ch"><span class="ct">23 holdings</span><span class="src">BT Appraisal · 07 May 2026</span></div><div class="cb" style="padding:0"><table class="tbl"><thead><tr><th style="padding-left:.9rem;width:28%">Stock</th><th>Qty</th><th>Avg cost</th><th>Price</th><th>Invested</th><th>Current</th><th>P/L</th><th>Return</th></tr></thead><tbody id="bt-body"></tbody></table></div></div>
+  </div>
+  <div class="page" id="p-emg">
+    <div class="ph"><div class="ph-ey">Abakkus Emerging Opportunities · RB</div><div class="ph-title"><strong>36 stocks</strong></div><div class="ph-sub">₹3.21 Cr · Invested ₹2.16 Cr · +₹94.1L (+43.5%)</div></div>
+    <div class="ks" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Current value</div><div class="kpi-val" style="color:var(--gn)">₹3.21 Cr</div><div class="kpi-sub up">+₹94.1L (+43.5%)</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--lm)"></div><div class="kpi-lbl">Top gainer</div><div class="kpi-val" style="color:var(--lm)">Sarda +289.9%</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--rd)"></div><div class="kpi-lbl">Top loser</div><div class="kpi-val" style="color:var(--rd)">Mastek -29.6%</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--t3)"></div><div class="kpi-lbl">Cash</div><div class="kpi-val" style="color:var(--t2)">₹10.82L</div></div>
+    </div>
+    <div class="card"><div class="ch"><span class="ct">36 holdings</span><span class="src">Abakkus · 07 May 2026</span></div><div class="cb" style="padding:0"><table class="tbl"><thead><tr><th style="padding-left:.9rem;width:28%">Stock</th><th>Qty</th><th>Avg cost</th><th>Price</th><th>Invested</th><th>Current</th><th>P/L</th><th>Return</th></tr></thead><tbody id="emg-body"></tbody></table></div></div>
+  </div>
+  <div class="page" id="p-alpha">
+    <div class="ph"><div class="ph-ey">Abakkus Diversified Alpha · RB</div><div class="ph-title"><strong>40 stocks</strong></div><div class="ph-sub">₹1.01 Cr · Invested ₹0.80 Cr · +₹21.1L (+26.3%)</div></div>
+    <div class="ks" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Current value</div><div class="kpi-val" style="color:var(--gn)">₹1.01 Cr</div><div class="kpi-sub up">+₹21.1L (+26.3%)</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--lm)"></div><div class="kpi-lbl">Top gainer</div><div class="kpi-val" style="color:var(--lm)">AB Capital +100.5%</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--rd)"></div><div class="kpi-lbl">Top loser</div><div class="kpi-val" style="color:var(--rd)">EFC -35.9%</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--t3)"></div><div class="kpi-lbl">Cash</div><div class="kpi-val" style="color:var(--t2)">₹2.98L</div></div>
+    </div>
+    <div class="card"><div class="ch"><span class="ct">40 holdings</span><span class="src">Abakkus · 07 May 2026</span></div><div class="cb" style="padding:0"><table class="tbl"><thead><tr><th style="padding-left:.9rem;width:28%">Stock</th><th>Qty</th><th>Avg cost</th><th>Price</th><th>Invested</th><th>Current</th><th>P/L</th><th>Return</th></tr></thead><tbody id="alpha-body"></tbody></table></div></div>
+  </div>
+  <div class="page" id="p-carn">
+    <div class="ph"><div class="ph-ey">Carnelian Asset Management · Shift Strategy · RB</div><div class="ph-title"><strong>32 stocks</strong></div><div class="ph-sub">₹1.43 Cr · Invested ₹1.24 Cr · +₹19.2L (+15.6%)</div></div>
+    <div class="ks" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Current value</div><div class="kpi-val" style="color:var(--gn)">₹1.43 Cr</div><div class="kpi-sub up">+₹19.2L (+15.6%)</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--lm)"></div><div class="kpi-lbl">Top gainer</div><div class="kpi-val" style="color:var(--lm)">Shaily +234.7%</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--rd)"></div><div class="kpi-lbl">Top loser</div><div class="kpi-val" style="color:var(--rd)">Quick Heal -65.6%</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--t3)"></div><div class="kpi-lbl">Cash</div><div class="kpi-val" style="color:var(--t2)">₹3.94L</div></div>
+    </div>
+    <div class="card"><div class="ch"><span class="ct">32 holdings</span><span class="src">Carnelian · 07 May 2026</span></div><div class="cb" style="padding:0"><table class="tbl"><thead><tr><th style="padding-left:.9rem;width:28%">Stock</th><th>Qty</th><th>Avg cost</th><th>Price</th><th>Invested</th><th>Current</th><th>P/L</th><th>Return</th></tr></thead><tbody id="carn-body"></tbody></table></div></div>
+  </div>
+
+  <!-- RB MF -->
+  <div class="page" id="p-rbmf">
+    <div class="ph"><div class="ph-ey">Prudent Fund Bazaar · MF · RB</div><div class="ph-title"><strong>2 schemes</strong> — HDFC Arb + HDFC Multi Cap</div><div class="ph-sub" id="rbmf-sub">Loading live NAVs...</div></div>
+    <div class="ks" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--bl)"></div><div class="kpi-lbl">Current value</div><div class="kpi-val" style="color:var(--bl)" id="rbmf-val">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">HDFC Arbitrage</div><div class="kpi-val" style="color:var(--gn)" id="rbmf-arb">—</div><div class="kpi-sub">CAGR 5.88%</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--t3)"></div><div class="kpi-lbl">HDFC Multi Cap</div><div class="kpi-val" style="color:var(--t2)" id="rbmf-mc">—</div><div class="kpi-sub">CAGR 1.28%</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--t3)"></div><div class="kpi-lbl">Portfolio CAGR</div><div class="kpi-val" style="color:var(--t2)">3.09%</div></div>
+    </div>
+    <div class="card"><div class="ch"><span class="ct">RB MF holdings</span><span class="src">Live NAV · mfapi.in</span></div><div class="cb" style="padding:0"><table class="tbl"><thead><tr><th style="padding-left:.9rem;width:36%">Fund</th><th>Units</th><th>Avg NAV</th><th>Live NAV</th><th>Invested</th><th>Current</th><th>P/L</th><th>Return</th><th>CAGR</th></tr></thead><tbody id="rbmf-body"></tbody></table></div></div>
+    <div class="ib warn" style="margin-top:0">HDFC Multi Cap avg NAV ₹18.46 vs current — marginally profitable. HDFC Arbitrage on track at ~5.88% CAGR.</div>
+  </div>
+
+  <!-- INTERNATIONAL -->
+  <div class="page" id="p-intl">
+    <div class="ph"><div class="ph-ey">GIFT City IFSC · International MF · RB</div><div class="ph-title">Go global, <strong>stay in control</strong></div><div class="ph-sub">Parag Parikh IFSC Nasdaq 100 + DSP Global · USD denominated · Live USD/INR</div></div>
+    <div class="ks" style="grid-template-columns:repeat(5,1fr)">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--bl)"></div><div class="kpi-lbl">Value (INR)</div><div class="kpi-val" style="color:var(--bl)" id="intl-inr">₹1.37 Cr</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--bl)"></div><div class="kpi-lbl">USD/INR rate</div><div class="kpi-val" style="color:var(--t2)" id="intl-fx">₹83.46</div><div class="kpi-sub">Live</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Return (INR)</div><div class="kpi-val" style="color:var(--gn)">+7.10%</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--rd)"></div><div class="kpi-lbl">Currency impact</div><div class="kpi-val" style="color:var(--rd)">-₹3.35L</div><div class="kpi-sub dn">INR appreciated</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--t3)"></div><div class="kpi-lbl">Return (USD)</div><div class="kpi-val" style="color:var(--t2)">+9.73%</div></div>
+    </div>
+    <div class="card"><div class="ch"><span class="ct">GIFT City positions</span><span class="src">Manual entry</span></div><div class="cb" style="padding:0">
+      <table class="tbl"><thead><tr><th style="padding-left:.9rem;width:28%">Fund</th><th>Entry</th><th>Entry NAV</th><th>Curr NAV</th><th>Units</th><th>Invested</th><th>Current (INR)</th><th>Gain</th><th>INR ret.</th><th>USD ret.</th></tr></thead>
+      <tbody>
+        <tr><td class="tn" style="padding-left:.9rem">Parag Parikh IFSC Nasdaq 100</td><td class="tdim">Mar 2026</td><td class="tdim">$100.00</td><td class="tgold">$107.20</td><td class="tdim">750</td><td>₹64,35,000</td><td class="tup">₹67,10,184</td><td class="tup">+₹2,75,184</td><td class="tup">+4.28%</td><td class="tup">+7.20%</td></tr>
+        <tr><td class="tn" style="padding-left:.9rem">DSP Global GIFT City Outbound</td><td class="tdim">Jan 2026</td><td class="tdim">$9.80</td><td class="tgold">$10.99</td><td class="tdim">7,653</td><td>₹63,90,000</td><td class="tup">₹70,25,997</td><td class="tup">+₹6,35,997</td><td class="tup">+9.95%</td><td class="tup">+12.25%</td></tr>
+      </tbody>
+      <tfoot><tr class="tot"><td style="padding-left:.9rem">Total</td><td>—</td><td>—</td><td>—</td><td>—</td><td>₹1,28,25,000</td><td class="tup">₹1,37,36,181</td><td class="tup">+₹9,11,181</td><td class="tup">+7.10%</td><td class="tup">+9.73%</td></tr></tfoot>
+      </table>
+    </div></div>
+  </div>
+
+  <!-- FAMILY -->
+  <div class="page" id="p-family">
+    <div class="ph"><div class="ph-ey">Family Portfolio · 4 members · 17 accounts</div><div class="ph-title">Complete <strong>family wealth picture</strong></div><div class="ph-sub">RB · NB · NANS · NIYU · All accounts complete · Live prices</div></div>
+    <div class="ks" style="grid-template-columns:repeat(5,1fr)">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--pk)"></div><div class="kpi-lbl">Family total</div><div class="kpi-val" style="color:var(--pk)" id="fam-total">—</div><div class="kpi-sub">Live</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--lm)"></div><div class="kpi-lbl">Total invested</div><div class="kpi-val" style="color:var(--lm)">₹30.74 Cr</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Family P/L</div><div class="kpi-val" style="color:var(--gn)" id="fam-pl">—</div><div class="kpi-sub" id="fam-ret">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--bl)"></div><div class="kpi-lbl">Best member</div><div class="kpi-val" style="color:var(--bl)">NB +22.5%</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Accounts</div><div class="kpi-val" style="color:var(--gn)">17</div><div class="kpi-sub">All complete ✓</div></div>
+    </div>
+    <div class="g4">
+      <div class="mc" onclick="setMem('RB',document.querySelectorAll('.mb')[0])"><div class="mc-name">RB (Ramamurthy Balu)</div><div class="mc-val" id="fc-rb">—</div><div class="mc-pl up" id="fp-rb">—</div><div class="mc-bar" style="background:var(--pk);width:52%"></div><div class="mc-sub">7 accounts</div></div>
+      <div class="mc" onclick="setMem('NB',document.querySelectorAll('.mb')[1])"><div class="mc-name">NB (Nirmala Balu)</div><div class="mc-val" id="fc-nb">—</div><div class="mc-pl up" id="fp-nb">—</div><div class="mc-bar" style="background:var(--bl);width:27%"></div><div class="mc-sub">5 accounts</div></div>
+      <div class="mc" onclick="setMem('NANS',document.querySelectorAll('.mb')[2])"><div class="mc-name">NANS (Nandini Balu)</div><div class="mc-val" id="fc-nans">—</div><div class="mc-pl up" id="fp-nans">—</div><div class="mc-bar" style="background:var(--lm);width:13%"></div><div class="mc-sub">3 accounts</div></div>
+      <div class="mc" onclick="setMem('NIYU',document.querySelectorAll('.mb')[3])"><div class="mc-name">NIYU (Niyati Balu)</div><div class="mc-val" id="fc-niyu">—</div><div class="mc-pl up" id="fp-niyu">—</div><div class="mc-bar" style="background:var(--t3);width:7%"></div><div class="mc-sub">2 accounts</div></div>
+    </div>
+    <div class="g2">
+      <div class="card" style="margin:0"><div class="ch"><span class="ct">P/L all 17 accounts</span><span class="src">Live</span></div><div class="cb" style="padding:.6rem 1rem" id="fam-pl-list"></div></div>
+      <div class="card" style="margin:0"><div class="ch"><span class="ct">Allocation by asset class</span></div><div class="cb" style="padding:.6rem 1rem" id="fam-alloc"></div></div>
+    </div>
+  </div>
+
+  <!-- ALL MF -->
+  <div class="page" id="p-allmf">
+    <div class="ph"><div class="ph-ey">All MF Schemes · Family · Live NAVs</div><div class="ph-title"><strong>14 schemes</strong> — sorted by return</div><div class="ph-sub">Prudent + Axis Bank MF · All 4 members · Live NAVs via mfapi.in</div></div>
+    <div class="ks" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--bl)"></div><div class="kpi-lbl">Total MF value</div><div class="kpi-val" style="color:var(--bl)" id="amf-total">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Total P/L</div><div class="kpi-val" style="color:var(--gn)" id="amf-pl">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--lm)"></div><div class="kpi-lbl">Star — HDFC Defence</div><div class="kpi-val" style="color:var(--lm)" id="amf-def">—</div><div class="kpi-sub">CAGR 41.96%</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--t3)"></div><div class="kpi-lbl">Schemes</div><div class="kpi-val" style="color:var(--t2)">14</div></div>
+    </div>
+    <div class="card"><div class="ch"><span class="ct">All 14 schemes</span><span class="src">Live NAV · mfapi.in</span></div><div class="cb" style="padding:0"><table class="tbl"><thead><tr><th style="padding-left:.9rem;width:30%">Fund</th><th>Member</th><th>Units</th><th>Avg NAV</th><th>Live NAV</th><th>Invested</th><th>Current</th><th>P/L</th><th>Return</th><th>CAGR</th></tr></thead><tbody id="amf-body"></tbody></table></div></div>
+    <div class="ib pink">🌟 HDFC Defence Fund (NANS) — invested ₹5L → now <span id="amf-def-val">₹13.96L</span>. Return <span id="amf-def-ret">+179.3%</span>. CAGR 41.96%. Outstanding.</div>
+  </div>
+
+  <!-- REPORTS -->
+  <div class="page" id="p-reports">
+    <div class="ph" style="display:flex;align-items:flex-end;justify-content:space-between">
+      <div><div class="ph-ey">Reports & P&L · All 17 accounts</div><div class="ph-title">Complete <strong>P&L report</strong></div><div class="ph-sub">All 17 accounts · Live prices</div></div>
+      <button onclick="printRep()" style="padding:.4rem 1.1rem;background:var(--pk);border:none;color:#fff;font-size:.62rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:var(--r)">⬇ Download PDF</button>
+    </div>
+    <div class="ks" style="grid-template-columns:repeat(5,1fr)">
+      <div class="kpi"><div class="kpi-bar" style="background:var(--pk)"></div><div class="kpi-lbl">Family total</div><div class="kpi-val" style="color:var(--pk)" id="rep-total">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--lm)"></div><div class="kpi-lbl">Invested</div><div class="kpi-val" style="color:var(--lm)">₹30.74 Cr</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--gn)"></div><div class="kpi-lbl">Family P/L</div><div class="kpi-val" style="color:var(--gn)" id="rep-pl">—</div><div class="kpi-sub" id="rep-ret">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--lm)"></div><div class="kpi-lbl">RB P/L</div><div class="kpi-val" style="color:var(--lm)" id="rep-rb">—</div></div>
+      <div class="kpi"><div class="kpi-bar" style="background:var(--bl)"></div><div class="kpi-lbl">NB P/L</div><div class="kpi-val" style="color:var(--bl)" id="rep-nb">—</div></div>
+    </div>
+    <div class="g2">
+      <div class="card" style="margin:0"><div class="ch"><span class="ct">All accounts P&L</span><span class="src">Live</span></div><div class="cb" style="padding:0"><table class="tbl"><thead><tr><th style="padding-left:.9rem">Account</th><th>Member</th><th>Invested</th><th>Current</th><th>P/L</th><th>Return</th></tr></thead><tbody id="rep-body"></tbody></table></div></div>
+      <div class="card" style="margin:0"><div class="ch"><span class="ct">Top 10 winners</span></div><div class="cb" style="padding:0"><table class="tbl"><thead><tr><th style="padding-left:.9rem">Stock</th><th>Account</th><th>Avg cost</th><th>P/L</th><th>Return</th></tr></thead><tbody id="rep-winners"></tbody></table></div></div>
+    </div>
+  </div>
+
+  </div><!-- /pages -->
+
+  <div class="ticker-wrap"><div class="ticker-inner" id="ticker"></div></div>
+  <footer>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 28" width="100" height="18">
+      <circle cx="12" cy="14" r="3" fill="#E8357A" opacity=".72"/>
+      <circle cx="28" cy="8"  r="4" fill="#E8357A" opacity=".88"/>
+      <circle cx="48" cy="5"  r="5.5" fill="#E8357A"/>
+      <circle cx="68" cy="8"  r="4" fill="#E8357A" opacity=".82"/>
+      <line x1="12" y1="14" x2="28" y2="8"  stroke="#E8357A" stroke-width="1.4" stroke-linecap="round"/>
+      <line x1="28" y1="8"  x2="48" y2="5"  stroke="#E8357A" stroke-width="1.6" stroke-linecap="round"/>
+      <line x1="48" y1="5"  x2="68" y2="8"  stroke="#E8357A" stroke-width="1.4" stroke-linecap="round"/>
+      <text x="78" y="18" font-family="Plus Jakarta Sans,Arial,sans-serif" font-size="14" font-weight="700" fill="#FFF" letter-spacing="3" opacity=".65">ARKA</text>
+    </svg>
+    <div class="fn" id="footer-note">All 17 accounts · Live NSE prices + mfapi.in NAVs · Auto-refresh 5 min · © 2026 ARKA</div>
+  </footer>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+'use strict';
+// ═══ ARKA STAGE 4 — CLEAN SINGLE SCRIPT ═══
+const $ = id => document.getElementById(id);
+const fI  = n => '₹' + Math.abs(Math.round(n)).toLocaleString('en-IN');
+const fC  = n => '₹' + (Math.abs(n)/10000000).toFixed(2) + ' Cr';
+const fL  = n => '₹' + (Math.abs(n)/100000).toFixed(1) + 'L';
+const fPL = n => (n>=0?'+':'-') + fI(n);
+const fPct= n => (n>=0?'+':'') + n.toFixed(2) + '%';
+const pCls= n => n>=0 ? 'tup' : 'tdn';
+const MC  = {RB:'rb',NB:'nb',NANS:'nans',NIYU:'niyu'};
+
+// ── COST BASIS (from verified statements) ────────────────────
+const FAMILY_COST = 307707433;
+const MEMBER_COST = {RB:163066019, NB:79933131, NANS:40506584, NIYU:24201699};
+const MEMBER_NAME = {RB:'Ramamurthy Balu', NB:'Nirmala Balu', NANS:'Nandini Balu', NIYU:'Niyati Balu'};
+
+// MF data with scheme codes for live NAV
+const MF = [
+  {id:'hdfc_def',  n:'HDFC Defence Fund',             mbr:'NANS', units:49997.5,    avg:10.0005, cost:500000,   sc:151271, cagr:41.96, type:'equity'},
+  {id:'kotak_mc',  n:'Kotak Mid Cap Fund',             mbr:'NANS', units:51191.702,  avg:91.80,   cost:4699501,  sc:120594, cagr:0,     type:'equity'},
+  {id:'canara_sc', n:'Canara Robeco Small Cap',        mbr:'NANS', units:154910.93,  avg:28.40,   cost:4400000,  sc:135781, cagr:15.42, type:'equity'},
+  {id:'axis_sc',   n:'Axis Small Cap Fund',            mbr:'NIYU', units:55060.037,  avg:81.72,   cost:4499699,  sc:125354, cagr:0,     type:'equity'},
+  {id:'icici_ma',  n:'ICICI Pru Multi-Asset Fund',    mbr:'NB',   units:27120.404,  avg:719.02,  cost:19500000, sc:120584, cagr:11.26, type:'hybrid'},
+  {id:'bajaj_fc',  n:'Bajaj Finserv Flexi Cap',       mbr:'NANS', units:905161.306, avg:13.26,   cost:12000000, sc:147568, cagr:11.28, type:'equity'},
+  {id:'hdfc_arb',  n:'HDFC Arbitrage — Wholesale',    mbr:'RB',   units:636617.191, avg:31.42,   cost:20000000, sc:102885, cagr:5.88,  type:'arb'},
+  {id:'icici_arb', n:'ICICI Pru Equity Arb.',         mbr:'NB',   units:284654.294, avg:35.13,   cost:9999507,  sc:120150, cagr:0,     type:'arb'},
+  {id:'nippon_mc', n:'Nippon India Multi Cap',         mbr:'NIYU', units:23790.872,  avg:294.27,  cost:7001000,  sc:118989, cagr:9.73,  type:'equity'},
+  {id:'mirae_es',  n:'Mirae Asset Equity Savings',    mbr:'NIYU', units:336055.292, avg:20.83,   cost:7000000,  sc:135800, cagr:2.31,  type:'hybrid'},
+  {id:'hdfc_mc',   n:'HDFC Multi Cap Fund',           mbr:'RB',   units:1110433.28, avg:18.46,   cost:20500000, sc:147622, cagr:1.28,  type:'equity'},
+  {id:'hdfc_mid',  n:'HDFC Mid Cap Fund',             mbr:'NIYU', units:28515.959,  avg:199.92,  cost:5701000,  sc:100233, cagr:3.27,  type:'equity'},
+  {id:'icici_gilt',n:'ICICI Pru Gilt Fund',           mbr:'NB',   units:103157.397, avg:96.94,   cost:10000000, sc:102858, cagr:5.59,  type:'debt'},
+  {id:'sbi_gilt',  n:'SBI Gilt Fund',                 mbr:'NANS', units:158162.128, avg:63.22,   cost:9999500,  sc:119775, cagr:0,     type:'debt'},
+];
+
+// Direct equity holdings (key holdings with avg cost)
+const EQ = [
+  // HDFC Sec — RB
+  {n:'Coal India',    sym:'COALINDIA', qty:24200,  avg:391.24, cost:9467923,  acc:'HDFC Sec',      mbr:'RB'},
+  {n:'ITC',           sym:'ITC',       qty:50000,  avg:337.96, cost:16898155, acc:'HDFC Sec',      mbr:'RB'},
+  {n:'Gold BeES',     sym:'GOLDBEES',  qty:100000, avg:91.91,  cost:9190712,  acc:'HDFC Sec',      mbr:'RB'},
+  {n:'Tata Consumer', sym:'TATACONSUM',qty:6500,   avg:1001.93,cost:6512562,  acc:'HDFC Sec',      mbr:'RB'},
+  {n:'Titan',         sym:'TITAN',     qty:2300,   avg:3612.72,cost:8309249,  acc:'HDFC Sec',      mbr:'RB'},
+  // Banyan Tree RB
+  {n:'HDFC Bank',     sym:'HDFCBANK',  qty:6088,   avg:488.95, cost:2976736,  acc:'BT PMS',        mbr:'RB'},
+  {n:'ICICI Lombard', sym:'ICICIGI',   qty:1025,   avg:1315.42,cost:1348309,  acc:'BT PMS',        mbr:'RB'},
+  {n:'ITC (BT)',      sym:'ITC',       qty:4996,   avg:183.86, cost:918563,   acc:'BT PMS',        mbr:'RB'},
+  {n:'HDFC AMC',      sym:'HDFCAMC',   qty:277,    avg:862.65, cost:238955,   acc:'BT PMS',        mbr:'RB'},
+  {n:'Kotak Bank',    sym:'KOTAKBANK', qty:4220,   avg:363.79, cost:1535181,  acc:'BT PMS',        mbr:'RB'},
+  {n:'TCS',           sym:'TCS',       qty:372,    avg:2790.26,cost:1037977,  acc:'BT PMS',        mbr:'RB'},
+  // Abakkus Emg top
+  {n:'Sarda Energy',  sym:'SARDAEN',   qty:3149,   avg:152.32, cost:479660,   acc:'Abakkus Emg',   mbr:'RB'},
+  {n:'Anup Engineering',sym:'ANUP',    qty:608,    avg:645.89, cost:392700,   acc:'Abakkus Emg',   mbr:'RB'},
+  {n:'Federal Bank',  sym:'FEDERALBNK',qty:5473,   avg:130.38, cost:713596,   acc:'Abakkus Emg',   mbr:'RB'},
+  {n:'Titagarh Rail', sym:'TITAGARH',  qty:707,    avg:221.83, cost:156833,   acc:'Abakkus Emg',   mbr:'RB'},
+  {n:'Emami Ltd',     sym:'EMAMILTD',  qty:1346,   avg:644.33, cost:867273,   acc:'Abakkus Emg',   mbr:'RB'},
+  // Carnelian top
+  {n:'Laurus Labs',   sym:'LAURUSLABS',qty:908,    avg:427.39, cost:388069,   acc:'Carnelian',     mbr:'RB'},
+  {n:'BHEL',          sym:'BHEL',      qty:1913,   avg:237.43, cost:454197,   acc:'Carnelian',     mbr:'RB'},
+  {n:'Shaily Engineering',sym:'SHAILY',qty:221,    avg:798.92, cost:176562,   acc:'Carnelian',     mbr:'RB'},
+  {n:'Cyient',        sym:'CYIENT',    qty:363,    avg:1764.58,cost:640543,   acc:'Carnelian',     mbr:'RB'},
+  {n:'Quick Heal',    sym:'QUICKHEAL', qty:650,    avg:520.77, cost:338497,   acc:'Carnelian',     mbr:'RB'},
+  // NB Axis Direct
+  {n:'BSE Limited',   sym:'BSE',       qty:2050,   avg:2658.12,cost:5449155,  acc:'Axis Direct',   mbr:'NB'},
+  {n:'CAMS',          sym:'CAMS',      qty:3200,   avg:750.14, cost:2400435,  acc:'Axis Direct',   mbr:'NB'},
+  {n:'HDFC Bank (NB)',sym:'HDFCBANK',  qty:7050,   avg:422.94, cost:2981756,  acc:'Axis Direct',   mbr:'NB'},
+  {n:'Titan (NB)',    sym:'TITAN',     qty:1000,   avg:2843.70,cost:2843703,  acc:'Axis Direct',   mbr:'NB'},
+  // NB Abakkus AllCap
+  {n:'Polycab India', sym:'POLYCAB',   qty:100,    avg:2503.74,cost:250374,   acc:'Abakkus AllCap',mbr:'NB'},
+  {n:'Bharti Airtel', sym:'BHARTIARTL',qty:469,    avg:933.81, cost:437959,   acc:'Abakkus AllCap',mbr:'NB'},
+  {n:'Sun Pharma',    sym:'SUNPHARMA', qty:512,    avg:1077.42,cost:551639,   acc:'Abakkus AllCap',mbr:'NB'},
+  // NANS BT top
+  {n:'HDFC Bank (NANS)',sym:'HDFCBANK',qty:2936,   avg:757.49, cost:2223986,  acc:'BT (NANS)',     mbr:'NANS'},
+  {n:'ITC (NANS)',    sym:'ITC',       qty:2197,   avg:195.35, cost:429186,   acc:'BT (NANS)',     mbr:'NANS'},
+];
+
+// Account static P/L (from statements — PMS accounts)
+const ACC = {
+  RB:   [{n:'HDFC Securities',type:'Direct+Gold',cost:50378601,pl:6050719},{n:'Banyan Tree PMS',type:'PMS',cost:17173863,pl:4945968},{n:'Abakkus Emerging',type:'PMS',cost:21630665,pl:9405109},{n:'Abakkus Alpha',type:'PMS',cost:8001027,pl:2105686},{n:'Carnelian Shift',type:'PMS',cost:12367563,pl:1924439},{n:'Prudent MF',type:'MF',cost:40500000,pl:631947,isMF:true},{n:'GIFT City',type:'Intl MF',cost:12825000,pl:911181}],
+  NB:   [{n:'Axis Direct',type:'Direct',cost:13675049,pl:6877539},{n:'Banyan Tree PMS',type:'PMS',cost:11911349,pl:2598127},{n:'Abakkus All Cap',type:'PMS',cost:14747226,pl:4913103},{n:'Prudent MF',type:'MF',cost:29500000,pl:3338563,isMF:true},{n:'Axis Bank MF',type:'MF',cost:9999507,pl:250097,isMF:true}],
+  NANS: [{n:'Banyan Tree PMS',type:'PMS',cost:8907583,pl:1185281},{n:'Prudent MF',type:'MF',cost:16900000,pl:4187386,isMF:true},{n:'Axis Bank MF',type:'MF',cost:14699001,pl:3183169,isMF:true}],
+  NIYU: [{n:'Prudent MF',type:'MF',cost:19702000,pl:337139,isMF:true},{n:'Axis Bank MF',type:'MF',cost:4499699,pl:1517812,isMF:true}],
+};
+const COLS = ['#E8357A','#3D9BE9','#2DD884','#48C9B0','#E8A435','#9B7FD4','#D9E04A','#FF4D6A'];
+
+// ── LIVE PRICES STATE ─────────────────────────────────────────
+let PRICES = {}; // sym -> {price, chg, chgPct}
+let NAVS   = {}; // mf id -> {nav, date}
+let FX     = 83.5;
+let lastFetch = null;
+let navsOk    = false;
+
+// ── FETCH ─────────────────────────────────────────────────────
+// ── PRICE FALLBACKS (statement values 07 May 2026) ──────────
+const FALLBACK = {
+  COALINDIA:456.85, ITC:307.40, GOLDBEES:124.58, TATACONSUM:1179.90,
+  TITAN:4294.00, HDFCBANK:796.05, ICICIGI:1850.20, KOTAKBANK:379.40,
+  TCS:2401.40, HDFCAMC:2834.60, SARDAEN:593.95, ANUP:2184.80,
+  FEDERALBNK:297.05, TITAGARH:844.30, EMAMILTD:454.40, MASTEK:1687.30,
+  LAURUSLABS:1206.50, BHEL:406.45, SHAILY:2673.80, CYIENT:894.40,
+  QUICKHEAL:179.38, BSE:3929.00, CAMS:842.50, BHARTIARTL:1826.60,
+  SUNPHARMA:1834.40, POLYCAB:9003.00, NTPC:400.35, SBIN:1092.00,
+  POLICYBZR:1684.10, HEROMOTOCO:5343.00,
+};
+
+// Statement NAVs (07 May 2026) — used as fallback
+const STMT_NAVS = {
+  hdfc_def:27.928, kotak_mc:142.25, canara_sc:39.67, axis_sc:109.29,
+  icici_ma:809.54, bajaj_fc:14.985, hdfc_arb:32.158, icici_arb:36.01,
+  nippon_mc:303.67, mirae_es:20.979, hdfc_mc:18.605, hdfc_mid:202.148,
+  icici_gilt:105.50, sbi_gilt:67.02
+};
+
+// ── LIVE FETCH — Yahoo Finance v7 batch (all symbols in one request) ─────
+// ── LIVE DATA via Netlify Functions (server-side, no CORS) ──
+// /api/prices and /api/navs are our own Netlify serverless functions
+// They run on Netlify's servers where Yahoo Finance + mfapi work fine
+
+async function fetchAllStocks(syms) {
+  try {
+    const symStr = [...new Set(EQ.map(e=>e.sym))].join(',');
+    const storedToken = sessionStorage.getItem('hdfc_access_token');
+    const tokenDate   = sessionStorage.getItem('hdfc_token_date');
+    // Check if token is from today
+    const tokenValid  = storedToken && tokenDate === new Date().toDateString();
+    const tokenParam  = tokenValid ? `&hdfc_token=${encodeURIComponent(storedToken)}` : '';
+    const r = await fetch(`/.netlify/functions/prices?symbols=${symStr}${tokenParam}`);
+    if(!r.ok) { console.log('ARKA: prices error', r.status); return {}; }
+    const d = await r.json();
+    if(d.auth_required) {
+      console.log('ARKA: HDFC auth required');
+      showConnectButton(d.login_url);
+      return {};
+    }
+    if(d.count > 0) {
+      hideConnectButton();
+      console.log('ARKA: Got', d.count, 'live prices from HDFC InvestRight');
+      return d.prices || {};
+    }
+    return {};
+  } catch(e) { console.log('ARKA: prices fetch error:', e.message); return {}; }
+}
+
+async function exchangeTokenDirect(requestToken) {
+  const API_KEY    = 'a642d4448e014a4293deebcdf8205057';
+  const API_SECRET = 'a68c1e9c86154a5fa6b6cec3d58c46d5';
+  const url = `https://developer.hdfcsec.com/oapi/v1/access-token?api_key=${API_KEY}&request_token=${requestToken}`;
+  try {
+    const r = await fetch(url, {
+      method:  'POST',
+      headers: {'Content-Type':'application/json'},
+      body:    JSON.stringify({apiSecret: API_SECRET})
+    });
+    const d = await r.json();
+    console.log('Direct token exchange response:', JSON.stringify(d).substring(0,200));
+    return d.accessToken || d.access_token || d.data?.accessToken || null;
+  } catch(e) {
+    console.log('Direct exchange error:', e.message);
+    return null;
+  }
+}
+
+function startHDFCLogin() {
+  const loginUrl = 'https://developer.hdfcsec.com/oapi/v1/login?api_key=a642d4448e014a4293deebcdf8205057';
+  const btn = document.getElementById('hdfc-topbar-btn');
+  if(btn) btn.textContent = '⏳ Waiting...';
+  if($('liveStatus')) $('liveStatus').textContent = 'Waiting for HDFC login...';
+  const w = window.open(loginUrl, 'HDFC Login', 'width=520,height=620,left=400,top=100');
+  const poll = setInterval(async () => {
+    try {
+      if(!w || w.closed) { clearInterval(poll); if(btn) btn.textContent = '⚡ Connect Live'; return; }
+      const url = w.location.href;
+      if(url.includes('requestToken=') || url.includes('prismatic-custard')) {
+        clearInterval(poll);
+        const urlParams  = new URLSearchParams(url.split('?')[1] || '');
+        const reqToken   = urlParams.get('requestToken');
+        w.close();
+        if(!reqToken) return;
+        if(btn) btn.textContent = '⏳ Authenticating...';
+        if($('liveStatus')) $('liveStatus').textContent = 'Authenticating...';
+
+        // Try direct browser exchange first (instant, no server roundtrip)
+        let accessToken = await exchangeTokenDirect(reqToken);
+
+        // Fallback to Netlify function if direct fails
+        if(!accessToken) {
+          console.log('Direct exchange failed, trying Netlify function...');
+          try {
+            const r = await fetch(`/.netlify/functions/prices?action=set-token&requestToken=${reqToken}`);
+            const d = await r.json();
+            accessToken = d.accessToken || null;
+          } catch(e) { console.log('Netlify fallback failed:', e.message); }
+        }
+
+        if(accessToken) {
+          sessionStorage.setItem('hdfc_access_token', accessToken);
+          sessionStorage.setItem('hdfc_token_date',   new Date().toDateString());
+          if(btn) { btn.textContent='✓ Live Connected'; btn.style.color='var(--gn)'; btn.style.borderColor='rgba(45,216,132,.3)'; btn.style.background='var(--gnb)'; }
+          if($('liveStatus')) $('liveStatus').textContent = 'Fetching live prices...';
+          hdfc_auth_pending = false;
+          setTimeout(fetchAllPrices, 300);
+        } else {
+          if(btn) btn.textContent = '⚡ Connect Live';
+          alert('Authentication failed — please try again');
+        }
+      }
+    } catch(e) { /* cross-origin before redirect — normal */ }
+  }, 800);
+}
+
+
+function showConnectButton(loginUrl) {
+  let btn = document.getElementById('hdfc-connect-btn');
+  if(!btn) {
+    btn = document.createElement('div');
+    btn.id = 'hdfc-connect-btn';
+    btn.style.cssText = 'position:fixed;bottom:80px;right:20px;background:#E8357A;color:#fff;padding:10px 18px;border-radius:6px;cursor:pointer;font-size:.72rem;font-weight:600;font-family:var(--sans);box-shadow:0 4px 20px rgba(232,53,122,.4);z-index:9999;letter-spacing:.04em;';
+    btn.innerHTML = '⚡ Connect HDFC Live Prices';
+    hdfc_auth_pending = true;
+    btn.onclick = () => {
+      if(!loginUrl) return;
+      const w = window.open(loginUrl, 'HDFC Login', 'width=520,height=620,left=400,top=100');
+      if($('liveStatus')) $('liveStatus').textContent = 'Waiting for HDFC login...';
+      const poll = setInterval(async () => {
+        try {
+          if(!w || w.closed) { clearInterval(poll); return; }
+          const url = w.location.href;
+          if(url.includes('request_token=') || url.includes('prismatic-custard')) {
+            clearInterval(poll);
+            w.close();
+            const urlParams = new URLSearchParams(url.split('?')[1] || '');
+            const token = urlParams.get('request_token');
+            if(token) {
+              if($('liveStatus')) $('liveStatus').textContent = 'Authenticating...';
+              await fetch(`/.netlify/functions/prices?action=set-token&request_token=${token}`);
+              if($('liveStatus')) $('liveStatus').textContent = 'Authenticated! Fetching live prices...';
+              setTimeout(fetchAllPrices, 500);
+            }
+          }
+        } catch(e) { /* cross-origin before redirect — normal */ }
+      }, 800);
+    };
+    document.body.appendChild(btn);
+  }
+  btn.style.display = 'block';
+}
+
+function hideConnectButton() {
+  const btn = document.getElementById('hdfc-connect-btn');
+  if(btn) btn.style.display = 'none';
+  hdfc_auth_pending = false;
+}
+
+async function fetchAllNavs() {
+  const urls = [
+    '/.netlify/functions/navs',
+    '/api/navs',
+  ];
+  for(const url of urls) {
+    try {
+      console.log('ARKA: Fetching NAVs from', url);
+      const r = await fetch(url);
+      if(!r.ok) { console.log('ARKA: navs error', r.status, 'trying next...'); continue; }
+      const d = await r.json();
+      console.log('ARKA: Got', d.count, 'live NAVs');
+      if(d.count > 0) return d.navs || {};
+    } catch(e) {
+      console.log('ARKA: navs fetch error:', e.message);
+    }
+  }
+  return {};
+}
+
+async function fetchFX() {
+  try {
+    const r = await fetch('https://open.er-api.com/v6/latest/USD');
+    if(!r.ok) return;
+    const d = await r.json();
+    if(d?.rates?.INR) FX = d.rates.INR;
+    console.log('ARKA: USD/INR =', FX);
+  } catch {}
+}
+
+let hdfc_auth_pending = false; // Stop retrying when auth required
+
+async function fetchAllPrices() {
+  if($('tb-refresh')) $('tb-refresh').textContent = '↻ Loading...';
+
+  // Step 1: Show statement prices immediately so UI is never blank
+  if(!lastFetch) {
+    Object.entries(FALLBACK).forEach(([sym,price]) => {
+      PRICES[sym] = {price, chg:0, chgPct:0, isFallback:true};
+    });
+    MF.forEach(mf => {
+      NAVS[mf.id] = {nav: STMT_NAVS[mf.id] || mf.avg, date:'07 May 2026', isFallback:true};
+    });
+    lastFetch = new Date();
+    updateAll();
+  }
+
+  // Step 2: Fetch live stock prices + NAVs + FX in parallel
+  try {
+    const syms = [...new Set(EQ.map(e => e.sym))];
+    const [liveData, liveNavData] = await Promise.all([
+      hdfc_auth_pending ? Promise.resolve({}) : fetchAllStocks(syms),
+      fetchAllNavs(),
+    ]);
+    await fetchFX();
+
+    // Update stock prices
+    let liveCount = 0;
+    Object.entries(liveData).forEach(([sym, data]) => {
+      if(data && data.price) { PRICES[sym] = data; liveCount++; }
+    });
+
+    // Update MF NAVs
+    let navCount = 0;
+    Object.entries(liveNavData).forEach(([id, data]) => {
+      if(data && data.nav) { NAVS[id] = data; navCount++; }
+    });
+    navsOk = navCount > 0;
+
+    lastFetch = new Date();
+    updateAll();
+
+    const statusMsg = liveCount > 0
+      ? `Live · ${liveCount} stocks · ${navCount > 0 ? navCount+' NAVs' : 'NAVs: 07 May'} · ₹${FX.toFixed(2)}/USD`
+      : navCount > 0
+        ? `Live NAVs: ${navCount} · Stocks: 07 May 2026`
+        : 'Statement prices · 07 May 2026';
+
+    if($('liveStatus')) $('liveStatus').textContent = statusMsg;
+    if($('tb-refresh')) $('tb-refresh').textContent = '↻ Refresh';
+    console.log('ARKA: Status —', statusMsg);
+
+  } catch(err) {
+    console.log('ARKA: fetchAllPrices error:', err.message);
+    if($('liveStatus')) $('liveStatus').textContent = 'Statement prices · 07 May 2026';
+    if($('tb-refresh')) $('tb-refresh').textContent = '↻ Refresh';
+  }
+}
+
+// ── PRICE HELPERS ─────────────────────────────────────────────
+function gP(sym, fb) { return PRICES[sym]?.price || fb; }
+function gN(id,  fb) { return NAVS[id]?.nav    || fb; }
+function mfV(m)  { return m.units * gN(m.id, m.avg); }
+function mfPL(m) { return mfV(m) - m.cost; }
+function mfPct(m){ return mfPL(m)/m.cost*100; }
+function eqV(e)  { return gP(e.sym, e.avg) * e.qty; }
+function eqPL(e) { return eqV(e) - e.cost; }
+function eqPct(e){ return eqPL(e)/e.cost*100; }
+
+function memVal(m) {
+  let v=0;
+  ACC[m].forEach(a => { v += a.isMF ? 0 : (a.cost + a.pl); });
+  MF.filter(mf=>mf.mbr===m).forEach(mf => { v += mfV(mf); });
+  return v;
+}
+
+// ── UPDATE ALL ────────────────────────────────────────────────
+function updateAll() {
+  updateTime();
+  updateSidebar();
+  updateDashboard();
+  updateTicker();
+  renderCurrent();
+}
+
+function updateTime() {
+  if(!lastFetch) return;
+  const t = lastFetch.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  if($('tb-time')) $('tb-time').textContent = t;
+  if($('footer-note')) $('footer-note').textContent = `All 17 accounts · Live NSE + mfapi.in · Updated ${t} · Auto-refresh 5 min · © 2026 ARKA`;
+}
+
+function updateSidebar() {
+  const V = {RB:memVal('RB'),NB:memVal('NB'),NANS:memVal('NANS'),NIYU:memVal('NIYU')};
+  V.FAM = V.RB+V.NB+V.NANS+V.NIYU;
+  Object.entries(V).forEach(([m,v]) => { const e=$('mv-'+m); if(e) e.textContent=fC(v); });
+  const cv = curMem==='FAM' ? V.FAM : (V[curMem]||0);
+  const cc = curMem==='FAM' ? FAMILY_COST : (MEMBER_COST[curMem]||1);
+  const cpl = cv-cc;
+  if($('sb-lbl')) $('sb-lbl').textContent = curMem==='FAM'?'Family Total':(MEMBER_NAME[curMem]||'');
+  if($('sb-val')) $('sb-val').textContent = fC(cv);
+  if($('sb-pl'))  $('sb-pl').textContent  = fPL(cpl)+' · '+fPct(cpl/cc*100);
+  // Family page
+  const famV=V.FAM, famPL=famV-FAMILY_COST;
+  ['RB','NB','NANS','NIYU'].forEach(m => {
+    const v=V[m], c=MEMBER_COST[m], p=v-c;
+    const el=$('fc-'+m.toLowerCase()); if(el) el.textContent=fC(v);
+    const pl=$('fp-'+m.toLowerCase()); if(pl){pl.textContent=fPL(p)+' · '+fPct(p/c*100);pl.className='mc-pl '+(p>=0?'up':'dn');}
+  });
+  if($('fam-total')) $('fam-total').textContent=fC(famV);
+  if($('fam-pl'))    $('fam-pl').textContent=fPL(famPL);
+  if($('fam-ret'))   $('fam-ret').textContent=fPct(famPL/FAMILY_COST*100);
+  if($('rep-total')) $('rep-total').textContent=fC(famV);
+  if($('rep-pl'))    $('rep-pl').textContent=fPL(famPL);
+  if($('rep-ret'))   $('rep-ret').textContent=fPct(famPL/FAMILY_COST*100);
+  if($('rep-rb'))    $('rep-rb').textContent=fPL(V.RB-MEMBER_COST.RB);
+  if($('rep-nb'))    $('rep-nb').textContent=fPL(V.NB-MEMBER_COST.NB);
+}
+
+// ── ASSET CLASS DATA ─────────────────────────────────────────
+// Cost and statement P/L for each asset class across all members
+const ASSET_CLASSES = [
+  {
+    id:'pms', label:'Equity PMS', accounts:'BT+Abakkus+Carnelian (RB, NB, NANS)',
+    cost:  85843496, stmtVal: 113497133, // RB BT+Emg+Alpha+Carn + NB BT+AllCap + NANS BT
+    members:{RB:{cost:59173118,val:76220202}, NB:{cost:26612575,val:35508869}, NANS:{cost:8907583,val:10092864}, NIYU:{cost:0,val:0}},
+    color:'var(--pk)', nav:false
+  },
+  {
+    id:'eq', label:'Direct Equity', accounts:'HDFC Sec (RB) · Axis Direct (NB)',
+    cost:  17124204, stmtVal: 20576258, // HDFC Sec + Axis Direct
+    members:{RB:{cost:13674204,val:15520478}, NB:{cost:13675049,val:20552588}, NANS:{cost:0,val:0}, NIYU:{cost:0,val:0}},
+    color:'var(--lm)', nav:true, // live prices available
+    eqSyms: ['COALINDIA','ITC','GOLDBEES','TATACONSUM','TITAN','BSE','CAMS','HDFCBANK']
+  },
+  {
+    id:'mf', label:'Mutual Funds', accounts:'Prudent + Axis Bank MF · All 4 members',
+    cost: 131700000, stmtVal: 149171047,
+    members:{RB:{cost:40500000,val:41131947}, NB:{cost:39499507,val:43483214}, NANS:{cost:31599001,val:38374316}, NIYU:{cost:24201699,val:26181570}},
+    color:'var(--bl)', nav:true
+  },
+  {
+    id:'debt', label:'Debt · Gilt', accounts:'ICICI Pru Gilt (NB) · SBI Gilt (NANS)',
+    cost:  19999500, stmtVal: 21683558,
+    members:{RB:{cost:0,val:0}, NB:{cost:10000000,val:10883611}, NANS:{cost:9999500,val:10599947}, NIYU:{cost:0,val:0}},
+    color:'var(--t3)', nav:true
+  },
+  {
+    id:'gold', label:'Gold ETF', accounts:'Gold BeES · HDFC Sec · RB',
+    cost:   9190712, stmtVal: 12458000,
+    members:{RB:{cost:9190712,val:12458000}, NB:{cost:0,val:0}, NANS:{cost:0,val:0}, NIYU:{cost:0,val:0}},
+    color:'var(--am)', nav:true, eqSyms:['GOLDBEES']
+  },
+  {
+    id:'intl', label:'International', accounts:'GIFT City · Parag Parikh IFSC + DSP · RB',
+    cost:  12825000, stmtVal: 13736181,
+    members:{RB:{cost:12825000,val:13736181}, NB:{cost:0,val:0}, NANS:{cost:0,val:0}, NIYU:{cost:0,val:0}},
+    color:'var(--bl)', nav:false
+  },
+];
+
+const MEMBER_FULL = {RB:'Ramamurthy Balu', NB:'Nirmala Balu', NANS:'Nandini Balu', NIYU:'Niyati Balu'};
+const MEMBER_TOTAL = {RB:189580000, NB:97933000, NANS:49100000, NIYU:26100000}; // approx live totals
+
+let dashMem = 'FAM';
+
+function dashView(mem, btn) {
+  dashMem = mem;
+  document.querySelectorAll('#p-dashboard .fb').forEach(b => b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  renderDashTable();
+}
+
+function getLiveAssetVal(ac) {
+  // Get live value for asset class based on live prices/NAVs
+  if(ac.id === 'eq') {
+    // HDFC Sec direct equity (excl Gold BeES) + Axis Direct
+    const hdfcEq = EQ.filter(e=>e.acc==='HDFC Sec' && e.sym!=='GOLDBEES');
+    const axisEq = EQ.filter(e=>e.acc==='Axis Direct');
+    const rb = hdfcEq.reduce((s,e)=>s+eqV(e),0);
+    const nb = axisEq.reduce((s,e)=>s+eqV(e),0);
+    return {RB:rb, NB:nb, NANS:0, NIYU:0, FAM:rb+nb};
+  }
+  if(ac.id === 'gold') {
+    const g = EQ.find(e=>e.sym==='GOLDBEES');
+    const v = g ? eqV(g) : ac.stmtVal;
+    return {RB:v, NB:0, NANS:0, NIYU:0, FAM:v};
+  }
+  if(ac.id === 'mf') {
+    const byMem = {RB:0,NB:0,NANS:0,NIYU:0};
+    MF.filter(m=>m.type!=='debt').forEach(m => { byMem[m.mbr] = (byMem[m.mbr]||0) + mfV(m); });
+    return {...byMem, FAM: Object.values(byMem).reduce((s,v)=>s+v,0)};
+  }
+  if(ac.id === 'debt') {
+    const byMem = {RB:0,NB:0,NANS:0,NIYU:0};
+    MF.filter(m=>m.type==='debt').forEach(m => { byMem[m.mbr] = (byMem[m.mbr]||0) + mfV(m); });
+    return {...byMem, FAM: Object.values(byMem).reduce((s,v)=>s+v,0)};
+  }
+  // PMS and International — use statement values
+  const byMem = {};
+  ['RB','NB','NANS','NIYU'].forEach(m => { byMem[m] = ac.members[m]?.val || 0; });
+  byMem.FAM = Object.values(byMem).reduce((s,v)=>s+v,0);
+  return byMem;
+}
+
+function getTodayGain(ac) {
+  // Only available for live-priced assets
+  if(ac.id === 'eq') {
+    const hdfcEq = EQ.filter(e=>e.acc==='HDFC Sec'&&e.sym!=='GOLDBEES');
+    const axisEq = EQ.filter(e=>e.acc==='Axis Direct');
+    let gain = 0;
+    [...hdfcEq,...axisEq].forEach(e => {
+      const p = PRICES[e.sym];
+      if(p && !p.isFallback) gain += p.chg * e.qty;
+    });
+    return gain !== 0 ? gain : null;
+  }
+  if(ac.id === 'gold') {
+    const g = EQ.find(e=>e.sym==='GOLDBEES');
+    const p = PRICES['GOLDBEES'];
+    return (g && p && !p.isFallback) ? p.chg * g.qty : null;
+  }
+  return null; // PMS, MF, Debt, Intl — no live today's gain
+}
+
+function renderDashTable() {
+  const mem = dashMem;
+  const tbody = document.getElementById('dash-tbody');
+  if(!tbody) return;
+
+  let totalVal=0, totalCost=0, totalToday=0, todayAvail=false;
+
+  const rows = ASSET_CLASSES.map(ac => {
+    const lv = getLiveAssetVal(ac);
+    const val  = mem==='FAM' ? lv.FAM : (lv[mem]||0);
+    const cost = mem==='FAM'
+      ? Object.values(ac.members).reduce((s,m)=>s+m.cost,0)
+      : (ac.members[mem]?.cost||0);
+    if(val===0 && cost===0) return null; // skip zero rows for member view
+
+    const pl   = val - cost;
+    const pct  = cost > 0 ? pl/cost*100 : 0;
+    const today = getTodayGain(ac);
+    const todayStr = today !== null
+      ? `<span class="${today>=0?'tup':'tdn'}">${today>=0?'+':''}${fI(today)} <span style="font-size:.52rem">(${today>=0?'+':''}${(today/val*100).toFixed(2)}%)</span></span>`
+      : '<span style="color:var(--t3)">—</span>';
+    if(today !== null) { totalToday += today; todayAvail = true; }
+
+    // Weight
+    const famVal = ASSET_CLASSES.reduce((s,a)=>{const v=getLiveAssetVal(a);return s+(mem==='FAM'?v.FAM:(v[mem]||0));},0);
+    const wt = famVal > 0 ? (val/famVal*100).toFixed(1)+'%' : '—';
+
+    totalVal  += val;
+    totalCost += cost;
+
+    // Progress bar width for card
+    const barW = famVal > 0 ? Math.min(100, val/famVal*100).toFixed(1) : 0;
+    // Update summary card
+    const cardVal  = document.getElementById(`dc-${ac.id}-val`);
+    const cardGain = document.getElementById(`dc-${ac.id}-gain`);
+    const cardRet  = document.getElementById(`dc-${ac.id}-ret`);
+    const cardBar  = document.getElementById(`dc-${ac.id}-bar`);
+    if(cardVal)  cardVal.textContent  = fC(val);
+    if(cardGain) { cardGain.textContent = fPL(pl); cardGain.className = 'dc-gain '+(pl>=0?'up':'dn'); }
+    if(cardRet)  { cardRet.textContent  = fPct(pct); cardRet.className = 'dc-ret '+(pl>=0?'up':'dn'); }
+    if(cardBar)  cardBar.style.width = barW+'%';
+
+    return `<tr>
+      <td style="padding-left:1rem">
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="width:3px;height:28px;background:${ac.color};border-radius:2px;flex-shrink:0"></div>
+          <div><div style="font-weight:600;color:var(--t1);font-size:.68rem">${ac.label}</div>
+          <div style="font-family:var(--mono);font-size:.5rem;color:var(--t3)">${ac.accounts}</div></div>
+        </div>
+      </td>
+      <td class="tdim" style="font-size:.58rem">${mem==='FAM'?'RB+NB+NANS+NIYU':mem}</td>
+      <td class="tmono">${fC(cost)}</td>
+      <td class="${pct>=0?'tgold':'tdn'} tmono">${fC(val)}</td>
+      <td class="tmono">${todayStr}</td>
+      <td class="${pCls(pl)} tmono">${fPL(pl)}</td>
+      <td class="${pCls(pl)}" style="font-weight:600">${fPct(pct)}</td>
+      <td class="tdim tmono">${wt}</td>
+    </tr>`;
+  }).filter(Boolean);
+
+  tbody.innerHTML = rows.join('');
+
+  // Update footer totals
+  const tpl = totalVal - totalCost;
+  const el = id => document.getElementById(id);
+  if(el('dash-tf-cost')) el('dash-tf-cost').textContent = fC(totalCost);
+  if(el('dash-tf-val'))  el('dash-tf-val').textContent  = fC(totalVal);
+  if(el('dash-tf-pl'))   el('dash-tf-pl').textContent   = fPL(tpl);
+  if(el('dash-tf-ret'))  el('dash-tf-ret').textContent  = fPct(tpl/totalCost*100);
+  if(el('dash-tf-today')) el('dash-tf-today').innerHTML = todayAvail
+    ? `<span class="${totalToday>=0?'tup':'tdn'}">${totalToday>=0?'+':''}${fI(totalToday)}</span>`
+    : '<span style="color:var(--t3)">Partial</span>';
+
+  // Update header
+  if(el('dash-total')) el('dash-total').textContent = fC(totalVal);
+  if(el('dash-cost'))  el('dash-cost').textContent  = fC(totalCost);
+  if(el('dash-gain'))  { el('dash-gain').textContent = fPL(tpl); el('dash-gain').className = tpl>=0?'up':'dn'; }
+  if(el('dash-pct'))   { el('dash-pct').textContent = fPct(tpl/totalCost*100); el('dash-pct').className = tpl>=0?'up':'dn'; }
+  if(todayAvail && el('dash-today')) {
+    el('dash-today').textContent = (totalToday>=0?'+':'')+fI(totalToday);
+    el('dash-today').className = totalToday>=0?'up':'dn';
+  }
+
+  // Update member cards with live values
+  const mvals = {
+    RB:   ASSET_CLASSES.reduce((s,ac)=>s+(getLiveAssetVal(ac).RB||0),0),
+    NB:   ASSET_CLASSES.reduce((s,ac)=>s+(getLiveAssetVal(ac).NB||0),0),
+    NANS: ASSET_CLASSES.reduce((s,ac)=>s+(getLiveAssetVal(ac).NANS||0),0),
+    NIYU: ASSET_CLASSES.reduce((s,ac)=>s+(getLiveAssetVal(ac).NIYU||0),0),
+  };
+  [['rb','RB'],['nb','NB'],['nans','NANS'],['niyu','NIYU']].forEach(([key,mem])=>{
+    const v=mvals[mem], c=MEMBER_COST[mem], p=v-c;
+    const ve=el(`dm-${key}-val`); if(ve) ve.textContent=fC(v);
+    const pe=el(`dm-${key}-pl`);  if(pe){ pe.textContent=fPL(p)+' · '+fPct(p/c*100); pe.className='dm-pl '+(p>=0?'up':'dn'); }
+  });
+}
+
+function updateDashboard() {
+  renderDashTable();
+  // Update status
+  const liveStocks = Object.values(PRICES).filter(p=>!p.isFallback).length;
+  const liveNavs   = Object.values(NAVS).filter(n=>!n.isFallback).length;
+  const statusTxt = liveStocks>0||liveNavs>0
+    ? `Live · ${liveStocks} stocks · ${liveNavs} NAVs`
+    : 'Statement · 07 May 2026';
+  const pill = document.getElementById('dash-status-pill');
+  const txt  = document.getElementById('dash-status-txt');
+  const src  = document.getElementById('dash-nav-src');
+  if(txt)  txt.textContent  = statusTxt;
+  if(src)  src.textContent  = statusTxt;
+  if(pill) pill.style.borderColor = liveStocks>0||liveNavs>0 ? 'rgba(45,216,132,.3)' : 'rgba(232,164,53,.3)';
+  // Update topbar time
+  if(lastFetch) {
+    const t = lastFetch.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    const tb = document.getElementById('tb-time'); if(tb) tb.textContent = t;
+  }
+}
+
+// ── TICKER ────────────────────────────────────────────────────
+function updateTicker() {
+  const items = [{n:'COAL INDIA',sym:'COALINDIA',fb:456.85},{n:'ITC',sym:'ITC',fb:307.40},{n:'GOLD BEES',sym:'GOLDBEES',fb:124.58},{n:'TITAN',sym:'TITAN',fb:4294},{n:'HDFCBANK',sym:'HDFCBANK',fb:796.05},{n:'BSE',sym:'BSE',fb:3929},{n:'TATA CONSUM',sym:'TATACONSUM',fb:1179.90},{n:'LAURUS LABS',sym:'LAURUSLABS',fb:1206.50},{n:'BHARTI AIRTEL',sym:'BHARTIARTL',fb:1826.60},{n:'SARDA ENERGY',sym:'SARDAEN',fb:593.95}];
+  const rows = [...items,...items].map(it=>{
+    const p=PRICES[it.sym]; const price=p?p.price:it.fb; const chg=p?p.chgPct:0;
+    const cls=chg>0?'up':chg<0?'dn':'neu';
+    return `<span class="tk"><span class="tk-n">${it.n}</span><span class="tk-v ${cls}">₹${price.toLocaleString('en-IN',{maximumFractionDigits:2})}</span><span class="${cls}">${chg>=0?'+':''}${chg.toFixed(2)}%</span></span>`;
+  }).join('');
+  if($('ticker')) $('ticker').innerHTML = rows;
+}
+
+// ── RENDER CURRENT PAGE ───────────────────────────────────────
+function renderCurrent() { renderPage(curPage); }
+function renderPage(id) {
+  if(id==='dashboard') renderDashTable();
+  if(id==='equity') renderEq();
+  if(id==='mf')     renderMFPage();
+  if(id==='debt')   renderDebt();
+  if(id==='gold')   renderGold();
+  if(id==='universe'){buildHM();buildUB();}
+  if(id==='hdfc')   renderHDFC();
+  if(id==='bt')     renderPMS('bt-body','bt');
+  if(id==='emg')    renderPMS('emg-body','emg');
+  if(id==='alpha')  renderPMS('alpha-body','alpha');
+  if(id==='carn')   renderPMS('carn-body','carn');
+  if(id==='rbmf')   renderRBMF();
+  if(id==='allmf')  renderAllMF();
+  if(id==='family') renderFamily();
+  if(id==='reports')renderReports();
+}
+
+// ── EQUITY ────────────────────────────────────────────────────
+let curEF='all';
+function setEF(f,btn){curEF=f;document.querySelectorAll('#p-equity .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderEq();}
+function renderEq(){
+  const q=($('eq-srch')||{value:''}).value.toLowerCase();
+  let d=EQ.map(e=>({...e,price:gP(e.sym,e.avg),pl:eqPL(e),pct:eqPct(e)}));
+  if(curEF==='gain') d=d.filter(x=>x.pct>0);
+  else if(curEF==='loss') d=d.filter(x=>x.pct<0);
+  else if(curEF==='top20') d=[...d].sort((a,b)=>b.pct-a.pct).slice(0,20);
+  else if(curEF==='RB') d=d.filter(x=>x.mbr==='RB');
+  else if(curEF==='NB') d=d.filter(x=>x.mbr==='NB');
+  if(q) d=d.filter(x=>x.n.toLowerCase().includes(q)||x.sym.toLowerCase().includes(q));
+  d.sort((a,b)=>b.pct-a.pct);
+  const tv=d.reduce((s,x)=>s+x.price*x.qty,0), tpl=d.reduce((s,x)=>s+x.pl,0);
+  const gn=d.filter(x=>x.pct>0).length, ls=d.filter(x=>x.pct<0).length;
+  const bst=d[0]||{n:'—',pct:0};
+  if($('eq-cnt'))   $('eq-cnt').textContent=d.length;
+  if($('eq-total')) $('eq-total').textContent=fC(tv);
+  if($('eq-pl'))    $('eq-pl').textContent=fPL(tpl);
+  if($('eq-gn'))    $('eq-gn').textContent=gn+' of '+d.length;
+  if($('eq-ls'))    $('eq-ls').textContent=ls+' of '+d.length;
+  if($('eq-best'))  $('eq-best').textContent=bst.n+' '+fPct(bst.pct);
+  if($('eq-body'))  $('eq-body').innerHTML=d.map(x=>`<tr>
+    <td class="tn" style="padding-left:.9rem">${x.n}</td>
+    <td><span class="mbadge ${MC[x.mbr]||''}">${x.acc}</span></td>
+    <td class="tdim tmono">${x.qty.toLocaleString('en-IN')}</td>
+    <td class="tdim tmono">₹${x.avg.toLocaleString('en-IN',{maximumFractionDigits:2})}</td>
+    <td class="${x.pct>=0?'tgold':'tdn'} tmono">₹${x.price.toLocaleString('en-IN',{maximumFractionDigits:2})} <span class="lpx ${Object.keys(PRICES).length>0?'live':'last'}">${Object.keys(PRICES).length>0?'●LIVE':'●LAST'}</span></td>
+    <td class="tmono">${fI(x.cost)}</td>
+    <td class="${x.pct>=0?'tgold':'tdn'} tmono">${fI(x.price*x.qty)}</td>
+    <td class="${pCls(x.pl)} tmono">${fPL(x.pl)}</td>
+    <td class="${pCls(x.pl)}">${fPct(x.pct)}</td>
+  </tr>`).join('');
+}
+
+// ── MF PAGE ───────────────────────────────────────────────────
+let curMFF='all';
+function setMFF(f,btn){curMFF=f;document.querySelectorAll('#p-mf .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderMFPage();}
+function renderMFRow(mf) {
+  const nav=gN(mf.id,mf.avg),val=mf.units*nav,pl=val-mf.cost,pct=pl/mf.cost*100;
+  const date=NAVS[mf.id]?.date||'07 May 2026';
+  return `<tr>
+    <td class="tn" style="padding-left:.9rem">${mf.n}<div style="font-family:var(--mono);font-size:.48rem;color:var(--t3)">NAV date: ${date}</div></td>
+    <td><span class="mbadge ${MC[mf.mbr]}">${mf.mbr}</span></td>
+    <td class="tdim tmono">${mf.units.toLocaleString('en-IN',{maximumFractionDigits:3})}</td>
+    <td class="tdim tmono">₹${mf.avg.toFixed(2)}</td>
+    <td class="tgold tmono">₹${nav.toFixed(3)} <span class="lpx ${navsOk?'live':'last'}">${navsOk?'●LIVE':'●LAST'}</span></td>
+    <td class="tmono">${fI(mf.cost)}</td>
+    <td class="${pct>=0?'tgold':'tdn'} tmono">${fI(val)}</td>
+    <td class="${pCls(pl)} tmono">${fPL(pl)}</td>
+    <td class="${pCls(pl)}">${fPct(pct)}</td>
+    <td class="${mf.cagr>0?'tup':'tdim'}">${mf.cagr>0?mf.cagr.toFixed(2)+'%':'—'}</td>
+  </tr>`;
+}
+function renderMFPage(){
+  let d=[...MF];
+  if(curMFF==='equity') d=d.filter(x=>x.type==='equity');
+  else if(curMFF==='debt') d=d.filter(x=>x.type==='debt'||x.type==='arb');
+  else if(curMFF==='gain') d=d.filter(x=>mfPct(x)>0);
+  else if(curMFF==='loss') d=d.filter(x=>mfPct(x)<0);
+  d.sort((a,b)=>mfPct(b)-mfPct(a));
+  const tv=d.reduce((s,m)=>s+mfV(m),0), tpl=d.reduce((s,m)=>s+mfPL(m),0);
+  if($('mf-total')) $('mf-total').textContent=fC(tv);
+  if($('mf-pl'))    $('mf-pl').textContent=fPL(tpl);
+  const def=MF.find(m=>m.id==='hdfc_def');
+  if($('mf-best')) $('mf-best').textContent=def?'+'+mfPct(def).toFixed(1)+'%':'—';
+  if($('mf-status')) $('mf-status').textContent = 'NAVs: 07 May 2026';
+  if($('mf-body')) $('mf-body').innerHTML=d.map(renderMFRow).join('');
+}
+
+// ── DEBT ──────────────────────────────────────────────────────
+function renderDebt(){
+  const debt=MF.filter(m=>m.type==='debt');
+  const ic=MF.find(m=>m.id==='icici_gilt'), sb=MF.find(m=>m.id==='sbi_gilt');
+  const tv=(ic?mfV(ic):0)+(sb?mfV(sb):0), tpl=(ic?mfPL(ic):0)+(sb?mfPL(sb):0);
+  if($('debt-total')) $('debt-total').textContent=fC(tv);
+  if($('debt-pl'))    $('debt-pl').textContent=fPL(tpl);
+  if(ic){if($('debt-icici'))$('debt-icici').textContent=fC(mfV(ic));if($('debt-icici-r')){$('debt-icici-r').textContent=fPct(mfPct(ic));$('debt-icici-r').className='kpi-sub up';}}
+  if(sb){if($('debt-sbi'))$('debt-sbi').textContent=fC(mfV(sb));if($('debt-sbi-r')){$('debt-sbi-r').textContent=fPct(mfPct(sb));$('debt-sbi-r').className='ksi-sub up';}}
+  if($('debt-body')) $('debt-body').innerHTML=debt.map(renderMFRow).join('');
+}
+
+// ── GOLD ──────────────────────────────────────────────────────
+function renderGold(){
+  const g=EQ.find(e=>e.sym==='GOLDBEES');if(!g)return;
+  const price=gP('GOLDBEES',124.58),val=price*g.qty,pl=val-g.cost,pct=pl/g.cost*100;
+  const pi=PRICES['GOLDBEES'];
+  if($('gold-val'))  $('gold-val').textContent=fC(val);
+  if($('gold-price'))$('gold-price').textContent='₹'+price.toFixed(2);
+  if($('gold-chg')){$('gold-chg').textContent=pi?(pi.chgPct>=0?'+':'')+pi.chgPct.toFixed(2)+'% today':'';$('gold-chg').className='kpi-sub '+(pi?.chgPct>=0?'up':'dn');}
+  if($('gold-pl'))  $('gold-pl').textContent=fPL(pl);
+  if($('gold-ret')) $('gold-ret').textContent=fPct(pct);
+  if($('gold-stats')) $('gold-stats').innerHTML=`
+    <div class="stat"><span class="sl">ISIN</span><span class="sv">INF204KB17I5</span></div>
+    <div class="stat"><span class="sl">Units held</span><span class="sv" style="color:var(--am)">1,00,000</span></div>
+    <div class="stat"><span class="sl">Avg buy price</span><span class="sv">₹91.91 / unit</span></div>
+    <div class="stat"><span class="sl">Total invested</span><span class="sv">${fI(g.cost)}</span></div>
+    <div class="stat"><span class="sl">Live price</span><span class="sv" style="color:var(--am)">₹${price.toFixed(2)}</span></div>
+    <div class="stat"><span class="sl">Current value</span><span class="sv" style="color:var(--am)">${fC(val)}</span></div>
+    <div class="stat"><span class="sl">Unrealised gain</span><span class="sv up">${fPL(pl)}</span></div>
+    <div class="stat"><span class="sl">Absolute return</span><span class="sv up">${fPct(pct)}</span></div>
+    <div class="stat"><span class="sl">Gold equivalent</span><span class="sv">~1,000 gm (99.5% pure)</span></div>`;
+  if($('gold-vs')) $('gold-vs').innerHTML=`
+    <div class="stat"><span class="sl">Gold ETF return (live)</span><span class="sv up">${fPct(pct)}</span></div>
+    <div class="stat"><span class="sl">Best PMS (Abakkus Emg)</span><span class="sv up">+43.5%</span></div>
+    <div class="stat"><span class="sl">Family MF avg</span><span class="sv up">+13.3%</span></div>
+    <div class="stat"><span class="sl">Portfolio weight (RB)</span><span class="sv">${(val/memVal('RB')*100).toFixed(1)}%</span></div>
+    <div class="stat"><span class="sl">Storage cost</span><span class="sv up">₹0 — electronic</span></div>
+    <div class="stat"><span class="sl">LTCG if sold</span><span class="sv">12.5% on gains >₹1.25L</span></div>`;
+}
+
+// ── HDFC SEC ──────────────────────────────────────────────────
+function renderHDFC(){
+  const h=EQ.filter(e=>e.acc==='HDFC Sec');
+  let tv=0,tc=0;
+  const rows=h.map(e=>{
+    const price=gP(e.sym,e.avg),val=price*e.qty,pl=val-e.cost,pct=pl/e.cost*100;
+    const pi=PRICES[e.sym],chg=pi?(pi.chgPct>=0?'+':'')+pi.chgPct.toFixed(2)+'%':'—';
+    tv+=val;tc+=e.cost;
+    return `<tr>
+      <td class="tn" style="padding-left:.9rem">${e.n}</td>
+      <td class="tdim tmono">${e.qty.toLocaleString('en-IN')}</td>
+      <td class="tdim tmono">₹${e.avg.toLocaleString('en-IN',{maximumFractionDigits:2})}</td>
+      <td class="${pct>=0?'tgold':'tdn'} tmono">₹${price.toLocaleString('en-IN',{maximumFractionDigits:2})}</td>
+      <td class="${pi?.chgPct>=0?'tup':'tdn'} tmono">${chg}</td>
+      <td class="tmono">${fI(e.cost)}</td>
+      <td class="${pct>=0?'tgold':'tdn'} tmono">${fI(val)}</td>
+      <td class="${pCls(pl)} tmono">${fPL(pl)}</td>
+      <td class="${pCls(pl)}">${fPct(pct)}</td>
+    </tr>`;
+  });
+  const tpl=tv-tc;
+  if($('hdfc-body')) $('hdfc-body').innerHTML=rows.join('')+`<tr class="tot"><td style="padding-left:.9rem">Total</td><td>—</td><td>—</td><td>—</td><td>—</td><td>${fI(tc)}</td><td class="tgold">${fI(tv)}</td><td class="tup">${fPL(tpl)}</td><td class="tup">${fPct(tpl/tc*100)}</td></tr>`;
+  if($('hdfc-val'))  $('hdfc-val').textContent=fC(tv);
+  if($('hdfc-ret'))  $('hdfc-ret').textContent=fPct(tpl/tc*100);
+  if($('hdfc-sub'))  $('hdfc-sub').textContent=`Current ${fC(tv)} · Invested ${fC(tc)} · P/L ${fPL(tpl)} · Live NSE`;
+  if($('hdfc-best')) $('hdfc-best').textContent=h.map(e=>({n:e.n,pct:eqPct(e)})).sort((a,b)=>b.pct-a.pct)[0]?.n+' '+fPct(Math.max(...h.map(e=>eqPct(e))));
+}
+
+// ── PMS STATIC TABLES ────────────────────────────────────────
+const PMS_H = {
+  bt:[{n:'HDFC Bank',qty:6088,avg:488.95,price:796.05,cost:2976736,val:4846352,pl:1869616},{n:'ICICI Lombard',qty:1025,avg:1315.42,price:1850.20,cost:1348309,val:1896455,pl:548146},{n:'ITC Ltd',qty:4996,avg:183.86,price:307.40,cost:918563,val:1535770,pl:617207},{n:'Kotak Bank',qty:4220,avg:363.79,price:379.40,cost:1535181,val:1601068,pl:65887},{n:'Urban Company',qty:7800,avg:119.36,price:146.62,cost:931036,val:1143636,pl:212600},{n:'TCS',qty:372,avg:2790.26,price:2401.40,cost:1037977,val:893321,pl:-144656},{n:'HDFC AMC',qty:277,avg:862.65,price:2834.60,cost:238955,val:785184,pl:546229},{n:'P&G Health',qty:159,avg:4991.68,price:5320.50,cost:793677,val:845960,pl:52283},{n:'ICICI Pru Life',qty:1477,avg:573.10,price:562.90,cost:846468,val:831403,pl:-15065},{n:'UTI AMC',qty:773,avg:672.69,price:974.95,cost:519987,val:753636,pl:233649},{n:'Infosys',qty:548,avg:842.18,price:1162.70,cost:461517,val:637160,pl:175643},{n:'ICRA Ltd',qty:111,avg:4011.78,price:5407.50,cost:445308,val:600233,pl:154925},{n:'HDFC Life',qty:911,avg:391.40,price:625.40,cost:356568,val:569739,pl:213171},{n:'PB Fintech',qty:400,avg:1494.89,price:1684.10,cost:597954,val:673640,pl:75686},{n:'Go Digit',qty:1759,avg:291.60,price:315.40,cost:512932,val:554789,pl:41857},{n:'Hero Motocorp',qty:95,avg:4141.58,price:5343.00,cost:393450,val:507585,pl:114135},{n:'Bajaj Finserv',qty:300,avg:1847.64,price:1824.50,cost:554292,val:547350,pl:-6942},{n:'Zydus Wellness',qty:1023,avg:396.02,price:503.75,cost:405132,val:515336,pl:110204},{n:'Bajaj Finance',qty:450,avg:883.11,price:972.75,cost:397401,val:437738,pl:40337},{n:'Info Edge',qty:400,avg:949.12,price:981.85,cost:379646,val:392740,pl:13094},{n:'Honasa Consumer',qty:1000,avg:287.53,price:354.60,cost:287528,val:354600,pl:67072},{n:'IEX',qty:2583,avg:147.17,price:133.81,cost:380137,val:345631,pl:-34506},{n:'Swiggy',qty:600,avg:287.18,price:279.50,cost:172305,val:167700,pl:-4605}],
+  emg:[{n:'Sarda Energy',qty:3149,avg:152.32,price:593.95,cost:479660,val:1870349,pl:1390689},{n:'PNB Housing',qty:1715,avg:673.86,price:1051.60,cost:1155677,val:1803494,pl:647817},{n:'Max Financial',qty:992,avg:933.05,price:1707.40,cost:925583,val:1693741,pl:768158},{n:'Federal Bank',qty:5473,avg:130.38,price:297.05,cost:713596,val:1625755,pl:912159},{n:'Anup Engineering',qty:608,avg:645.89,price:2184.80,cost:392700,val:1328358,pl:935659},{n:'Jindal Stainless',qty:1698,avg:263.85,price:766.60,cost:448016,val:1301687,pl:853671},{n:'Canara Bank',qty:9197,avg:72.77,price:135.93,cost:669223,val:1250148,pl:580925},{n:'LT Foods',qty:2715,avg:199.04,price:432.20,cost:540387,val:1173423,pl:633036},{n:'Titagarh Rail',qty:707,avg:221.83,price:844.30,cost:156833,val:596920,pl:440087},{n:'Emami',qty:1346,avg:644.33,price:454.40,cost:867273,val:611622,pl:-255651},{n:'Mastek',qty:241,avg:2397.28,price:1687.30,cost:577743,val:406639,pl:-171104},{n:'JK Lakshmi Cem',qty:1502,avg:818.56,price:668.85,cost:1229471,val:1004613,pl:-224858},{n:'Ion Exchange',qty:2361,avg:338.52,price:426.50,cost:799256,val:1006967,pl:207711},{n:'Shriram Pistons',qty:186,avg:1104.70,price:3605.40,cost:205475,val:670604,pl:465129},{n:'Stylam Ind',qty:354,avg:1222.64,price:2634.80,cost:432813,val:932719,pl:499906},{n:'Jubilant Pharmova',qty:944,avg:832.45,price:981.15,cost:785829,val:926206,pl:140377},{n:'TVS Holdings',qty:64,avg:11836.82,price:14632.00,cost:757557,val:936448,pl:178891},{n:'Kajaria Ceramics',qty:590,avg:905.63,price:1098.80,cost:534324,val:648292,pl:113968},{n:'IIFL Finance',qty:2337,avg:395.61,price:464.20,cost:924547,val:1084835,pl:160288},{n:'JTL Industries',qty:5598,avg:54.60,price:82.23,cost:305626,val:460324,pl:154698}],
+  alpha:[{n:'AB Capital',qty:1478,avg:184.05,price:369.00,cost:272028,val:545382,pl:273354},{n:'NTPC',qty:1061,avg:328.30,price:400.35,cost:348331,val:424771,pl:76440},{n:'Axis Bank',qty:327,avg:1084.92,price:1292.70,cost:354770,val:422713,pl:67943},{n:'Cummins India',qty:77,avg:3812.13,price:5403.00,cost:293534,val:416031,pl:122497},{n:'State Bank',qty:369,avg:694.78,price:1092.00,cost:256373,val:402948,pl:146575},{n:'L&T',qty:100,avg:3499.92,price:4023.00,cost:349992,val:402300,pl:52308},{n:'PNB Housing',qty:379,avg:758.38,price:1051.60,cost:287426,val:398556,pl:111130},{n:'Jindal Steel',qty:300,avg:899.26,price:1258.20,cost:269777,val:377460,pl:107683},{n:'Bharti Airtel',qty:195,avg:1383.62,price:1826.60,cost:269805,val:356187,pl:86382},{n:'Canara Bank',qty:2600,avg:105.64,price:135.93,cost:274668,val:353418,pl:78750},{n:'LT Foods',qty:665,avg:217.97,price:432.20,cost:144951,val:287413,pl:142462},{n:'Vedanta',qty:803,avg:153.45,price:305.40,cost:123221,val:245236,pl:122015},{n:'EFC I Ltd',qty:329,avg:302.26,price:193.77,cost:99444,val:63750,pl:-35694}],
+  carn:[{n:'Laurus Labs',qty:908,avg:427.39,price:1206.50,cost:388069,val:1095502,pl:707433},{n:'Biocon',qty:2683,avg:360.96,price:382.25,cost:968467,val:1025577,pl:57110},{n:'BHEL',qty:1913,avg:237.43,price:406.45,cost:454197,val:777539,pl:323342},{n:'Kalpataru Proj',qty:593,avg:1158.85,price:1297.90,cost:687196,val:769655,pl:82459},{n:'L&T',qty:155,avg:3542.61,price:4023.00,cost:549104,val:623565,pl:74461},{n:'Kirloskar Pneumatic',qty:375,avg:899.85,price:1590.80,cost:337443,val:596550,pl:259107},{n:'Shaily Engineering',qty:221,avg:798.92,price:2673.80,cost:176562,val:590910,pl:414348},{n:'Pricol Ltd',qty:872,avg:427.00,price:618.80,cost:372348,val:539594,pl:167246},{n:'Crompton Consumer',qty:1709,avg:271.71,price:290.75,cost:464354,val:496892,pl:32538},{n:'Tata Motors',qty:1126,avg:362.97,price:434.05,cost:408703,val:488740,pl:80037},{n:'Aurobindo Pharma',qty:328,avg:1179.10,price:1478.70,cost:386745,val:485014,pl:98269},{n:'Bandhan Bank',qty:2276,avg:167.98,price:207.63,cost:382325,val:472566,pl:90241},{n:'L&T Technology',qty:106,avg:4739.40,price:3772.90,cost:502376,val:399927,pl:-102449},{n:'Cyient',qty:363,avg:1764.58,price:894.40,cost:640543,val:324667,pl:-315876},{n:'Quick Heal',qty:650,avg:520.77,price:179.38,cost:338497,val:116597,pl:-221900}],
+};
+function renderPMS(bodyId,key){
+  const rows=PMS_H[key]||[];if(!$(bodyId))return;
+  const s=[...rows].sort((a,b)=>b.val-a.val);
+  const tc=rows.reduce((t,r)=>t+r.cost,0),tv=rows.reduce((t,r)=>t+r.val,0),tpl=rows.reduce((t,r)=>t+r.pl,0);
+  $(bodyId).innerHTML=s.map(r=>`<tr>
+    <td class="tn" style="padding-left:.9rem">${r.n}</td>
+    <td class="tdim tmono">${r.qty.toLocaleString('en-IN')}</td>
+    <td class="tdim tmono">₹${r.avg.toLocaleString('en-IN',{maximumFractionDigits:2})}</td>
+    <td class="${r.pl>=0?'tgold':'tdn'} tmono">₹${r.price.toLocaleString('en-IN',{maximumFractionDigits:2})}</td>
+    <td class="tmono">${fI(r.cost)}</td>
+    <td class="${r.pl>=0?'tgold':'tdn'} tmono">${fI(r.val)}</td>
+    <td class="${pCls(r.pl)} tmono">${fPL(r.pl)}</td>
+    <td class="${pCls(r.pl)}">${fPct(r.pl/r.cost*100)}</td>
+  </tr>`).join('')
+  +`<tr class="tot"><td style="padding-left:.9rem">Total</td><td>—</td><td>—</td><td>—</td><td>${fI(tc)}</td><td class="tgold">${fI(tv)}</td><td class="tup">${fPL(tpl)}</td><td class="tup">${fPct(tpl/tc*100)}</td></tr>`;
+}
+
+// ── RB MF ─────────────────────────────────────────────────────
+function renderRBMF(){
+  const rb=MF.filter(m=>m.mbr==='RB');
+  const tv=rb.reduce((s,m)=>s+mfV(m),0);
+  const arb=MF.find(m=>m.id==='hdfc_arb'),mc=MF.find(m=>m.id==='hdfc_mc');
+  if($('rbmf-val')) $('rbmf-val').textContent=fC(tv);
+  if(arb&&$('rbmf-arb')) $('rbmf-arb').textContent=fC(mfV(arb));
+  if(mc&&$('rbmf-mc'))   $('rbmf-mc').textContent=fC(mfV(mc));
+  if($('rbmf-sub')) $('rbmf-sub').textContent=`Current ${fC(tv)} · Invested ${fC(rb.reduce((s,m)=>s+m.cost,0))} · Live NAVs`;
+  if($('rbmf-body')) $('rbmf-body').innerHTML=rb.map(renderMFRow).join('');
+}
+
+// ── ALL MF ────────────────────────────────────────────────────
+function renderAllMF(){
+  const sorted=[...MF].sort((a,b)=>mfPct(b)-mfPct(a));
+  const tv=MF.reduce((s,m)=>s+mfV(m),0),tpl=MF.reduce((s,m)=>s+mfPL(m),0);
+  const def=MF.find(m=>m.id==='hdfc_def');
+  if($('amf-total')) $('amf-total').textContent=fC(tv);
+  if($('amf-pl'))    $('amf-pl').textContent=fPL(tpl);
+  if($('amf-def'))   $('amf-def').textContent=def?'+'+mfPct(def).toFixed(1)+'%':'—';
+  if($('amf-def-val')) $('amf-def-val').textContent=def?fI(mfV(def)):'₹13.96L';
+  if($('amf-def-ret')) $('amf-def-ret').textContent=def?'+'+mfPct(def).toFixed(1)+'%':'+179.3%';
+  if($('amf-body')) $('amf-body').innerHTML=sorted.map(renderMFRow).join('');
+}
+
+// ── FAMILY ────────────────────────────────────────────────────
+function renderFamily(){
+  if($('fam-pl-list')) $('fam-pl-list').innerHTML=[
+    {n:'Abakkus Emerging (RB)',v:'+₹94.1L',r:'+43.5%'},{n:'NB Axis Direct',v:'+₹68.8L',r:'+50.3%'},
+    {n:'HDFC Sec (RB)',v:'+₹60.5L',r:'+12.0%'},{n:'Banyan Tree (RB)',v:'+₹49.5L',r:'+28.8%'},
+    {n:'Abakkus AllCap (NB)',v:'+₹49.1L',r:'+33.3%'},{n:'NANS Prudent MF',v:'+₹41.9L',r:'+24.8%'},
+    {n:'NB Prudent MF',v:'+₹33.4L',r:'+11.3%'},{n:'NANS Axis Bank MF',v:'+₹31.8L',r:'+21.7%'},
+    {n:'Banyan Tree (NB)',v:'+₹26.0L',r:'+21.8%'},{n:'Abakkus Alpha (RB)',v:'+₹21.1L',r:'+26.3%'},
+    {n:'Carnelian Shift (RB)',v:'+₹19.2L',r:'+15.6%'},{n:'NIYU Axis SC',v:'+₹15.2L',r:'+33.7%'},
+    {n:'Banyan Tree (NANS)',v:'+₹11.9L',r:'+13.3%'},{n:'GIFT City (RB)',v:'+₹9.1L',r:'+7.1%'},
+    {n:'RB Prudent MF',v:'+₹6.3L',r:'+1.6%'},{n:'NIYU Prudent MF',v:'+₹3.4L',r:'+1.7%'},
+    {n:'NB Axis Bank MF',v:'+₹2.5L',r:'+2.5%'},
+  ].map(x=>`<div class="stat"><span class="sl">${x.n}</span><span class="sv up">${x.v} (${x.r})</span></div>`).join('');
+  if($('fam-alloc')) $('fam-alloc').innerHTML=[
+    {l:'PMS — Abakkus (3)',v:'₹6.19 Cr · 17.1%',c:'lm'},{l:'PMS — Banyan Tree (3)',v:'₹4.68 Cr · 12.9%',c:'lm'},
+    {l:'PMS — Carnelian (RB)',v:'₹1.43 Cr · 3.9%',c:'lm'},{l:'Direct — HDFC Sec (RB)',v:'₹5.64 Cr · 15.5%',c:'lm'},
+    {l:'Direct — Axis Direct (NB)',v:'₹2.06 Cr · 5.7%',c:'lm'},{l:'MF — Prudent (all 4)',v:'₹11.51 Cr · 31.7%',c:'bl'},
+    {l:'MF — Axis Bank',v:'₹3.41 Cr · 9.4%',c:'bl'},{l:'International — GIFT City',v:'₹1.37 Cr · 3.8%',c:'bl'},
+  ].map(x=>`<div class="stat"><span class="sl">${x.l}</span><span class="sv" style="color:var(--${x.c})">${x.v}</span></div>`).join('');
+}
+
+// ── REPORTS ───────────────────────────────────────────────────
+function renderReports(){
+  const accs=[
+    {n:'Abakkus Emerging',mbr:'RB',inv:'₹2.16 Cr',cur:'₹3.21 Cr',pl:'+₹94.1L',ret:'+43.5%'},
+    {n:'Axis Direct (NB)',mbr:'NB',inv:'₹1.37 Cr',cur:'₹2.06 Cr',pl:'+₹68.8L',ret:'+50.3%'},
+    {n:'HDFC Securities',mbr:'RB',inv:'₹5.04 Cr',cur:'₹5.64 Cr',pl:'+₹60.5L',ret:'+12.0%'},
+    {n:'Banyan Tree (RB)',mbr:'RB',inv:'₹1.72 Cr',cur:'₹2.21 Cr',pl:'+₹49.5L',ret:'+28.8%'},
+    {n:'Abakkus All Cap',mbr:'NB',inv:'₹1.47 Cr',cur:'₹1.97 Cr',pl:'+₹49.1L',ret:'+33.3%'},
+    {n:'NANS Prudent MF',mbr:'NANS',inv:'₹1.69 Cr',cur:'₹2.11 Cr',pl:'+₹41.9L',ret:'+24.8%'},
+    {n:'NB Prudent MF',mbr:'NB',inv:'₹2.95 Cr',cur:'₹3.28 Cr',pl:'+₹33.4L',ret:'+11.3%'},
+    {n:'NANS Axis Bank MF',mbr:'NANS',inv:'₹1.47 Cr',cur:'₹1.79 Cr',pl:'+₹31.8L',ret:'+21.7%'},
+    {n:'Banyan Tree (NB)',mbr:'NB',inv:'₹1.19 Cr',cur:'₹1.45 Cr',pl:'+₹26.0L',ret:'+21.8%'},
+    {n:'Abakkus Alpha',mbr:'RB',inv:'₹0.80 Cr',cur:'₹1.01 Cr',pl:'+₹21.1L',ret:'+26.3%'},
+    {n:'Carnelian Shift',mbr:'RB',inv:'₹1.24 Cr',cur:'₹1.43 Cr',pl:'+₹19.2L',ret:'+15.6%'},
+    {n:'NIYU Axis Bank MF',mbr:'NIYU',inv:'₹0.45 Cr',cur:'₹0.60 Cr',pl:'+₹15.2L',ret:'+33.7%'},
+    {n:'Banyan Tree (NANS)',mbr:'NANS',inv:'₹0.89 Cr',cur:'₹1.01 Cr',pl:'+₹11.9L',ret:'+13.3%'},
+    {n:'GIFT City',mbr:'RB',inv:'₹1.28 Cr',cur:'₹1.37 Cr',pl:'+₹9.1L',ret:'+7.1%'},
+    {n:'RB Prudent MF',mbr:'RB',inv:'₹4.05 Cr',cur:'₹4.11 Cr',pl:'+₹6.3L',ret:'+1.6%'},
+    {n:'NIYU Prudent MF',mbr:'NIYU',inv:'₹1.97 Cr',cur:'₹2.00 Cr',pl:'+₹3.4L',ret:'+1.7%'},
+    {n:'NB Axis Bank MF',mbr:'NB',inv:'₹1.00 Cr',cur:'₹1.02 Cr',pl:'+₹2.5L',ret:'+2.5%'},
+  ];
+  if($('rep-body')) $('rep-body').innerHTML=accs.map(a=>`<tr>
+    <td class="tn" style="padding-left:.9rem">${a.n}</td>
+    <td><span class="mbadge ${MC[a.mbr]}">${a.mbr}</span></td>
+    <td>${a.inv}</td><td class="tgold">${a.cur}</td><td class="tup">${a.pl}</td><td class="tup">${a.ret}</td>
+  </tr>`).join('')
+  +`<tr class="tot"><td style="padding-left:.9rem">Family Total</td><td>—</td><td>₹30.74 Cr</td><td class="tgold">₹36.29 Cr+</td><td class="tup">+₹5.55 Cr+</td><td class="tup">+18.0%</td></tr>`;
+  if($('rep-winners')) $('rep-winners').innerHTML=[
+    {n:'Sarda Energy',acc:'Abakkus Emg',avg:'₹152',pl:'+₹13.9L',ret:'+289.9%'},
+    {n:'Titagarh Rail',acc:'Abakkus Emg',avg:'₹222',pl:'+₹4.4L',ret:'+280.6%'},
+    {n:'Anup Engineering',acc:'Abakkus Emg',avg:'₹646',pl:'+₹9.4L',ret:'+238.3%'},
+    {n:'Shaily Engineering',acc:'Carnelian',avg:'₹799',pl:'+₹4.1L',ret:'+234.7%'},
+    {n:'Polycab India',acc:'Abakkus AllCap',avg:'₹2,504',pl:'+₹6.5L',ret:'+259.6%'},
+    {n:'HDFC AMC',acc:'Banyan Tree',avg:'₹863',pl:'+₹5.5L',ret:'+228.6%'},
+    {n:'Shriram Pistons',acc:'Abakkus Emg',avg:'₹1,105',pl:'+₹4.7L',ret:'+226.4%'},
+    {n:'Laurus Labs',acc:'Carnelian',avg:'₹427',pl:'+₹7.1L',ret:'+182.3%'},
+    {n:'Kirloskar Pneumatic',acc:'Carnelian',avg:'₹900',pl:'+₹2.6L',ret:'+76.8%'},
+    {n:'Federal Bank',acc:'Abakkus Emg',avg:'₹130',pl:'+₹9.1L',ret:'+127.8%'},
+  ].map(w=>`<tr><td class="tn" style="padding-left:.9rem">${w.n}</td><td class="tdim">${w.acc}</td><td class="tdim tmono">${w.avg}</td><td class="tup tmono">${w.pl}</td><td class="tup">${w.ret}</td></tr>`).join('');
+}
+
+// ── HEATMAP ───────────────────────────────────────────────────
+const HM_N=['HDFC Arb','HDFC MC','Kotak MC','Canara SC','Axis SC','Bajaj FC','Mirae ES','Nippon MC','ICICI MA','HDFC Mid'];
+const HM_F=['HDFC Arbitrage Fund','HDFC Multi Cap Fund','Kotak Mid Cap Fund','Canara Robeco Small Cap','Axis Small Cap Fund','Bajaj Finserv Flexi Cap','Mirae Asset Equity Savings','Nippon India Multi Cap','ICICI Pru Multi-Asset','HDFC Mid Cap Fund'];
+const HM_M=[[999,62,18,14,12,20,10,16,22,15],[62,999,28,22,18,35,12,28,38,26],[18,28,999,34,28,30,8,24,26,38],[14,22,34,999,30,26,6,20,22,28],[12,18,28,30,999,22,5,18,20,24],[20,35,30,26,22,999,10,26,32,28],[10,12,8,6,5,10,999,8,14,8],[16,28,24,20,18,26,8,999,24,22],[22,38,26,22,20,32,14,24,999,28],[15,26,38,28,24,28,8,22,28,999]];
+function hmC(v,s){if(s)return 'hm-self';if(v>=60)return 'hm-c7';if(v>=40)return 'hm-c6';if(v>=28)return 'hm-c5';if(v>=20)return 'hm-c4';if(v>=14)return 'hm-c3';if(v>=8)return 'hm-c2';return 'hm-c1';}
+function buildHM(){
+  const el=$('hm-grid');if(!el)return;
+  el.style.display='inline-grid';
+  el.style.gridTemplateColumns='80px repeat(10,44px)';
+  el.style.gap='2px';
+  let h='<div></div>';
+  HM_N.forEach(n=>{h+=`<div class="hm-col">${n}</div>`;});
+  HM_M.forEach((row,i)=>{
+    h+=`<div class="hm-lbl">${HM_N[i]}</div>`;
+    row.forEach((v,j)=>{
+      const s=i===j;
+      h+=`<div class="hm-cell ${hmC(v,s)}" data-i="${i}" data-j="${j}" data-v="${v}">${s?'—':v}</div>`;
+    });
+  });
+  el.innerHTML=h;
+  el.addEventListener('mouseover',e=>{
+    const c=e.target.closest('.hm-cell');if(!c)return;
+    const i=+c.dataset.i,j=+c.dataset.j,v=+c.dataset.v,s=i===j;
+    const col=v>=40?'#FF4D6A':v>=20?'#D9E04A':'#2DD884';
+    showTT(e,s?`<strong>${HM_F[i]}</strong><br><span style="color:var(--t3)">Same fund</span>`:`<strong>${HM_F[i]}</strong><br>↔ ${HM_F[j]}<br><strong style="color:${col}">${v} common stocks</strong>`);
+  });
+  el.addEventListener('mouseout',e=>{if(!e.relatedTarget?.closest('#hm-grid'))hideTT();});
+}
+
+// ── UNIVERSE BAR ──────────────────────────────────────────────
+const UB=[{n:'HDFC Defence',total:28,ov:2,uq:26},{n:'Axis SC',total:52,ov:14,uq:38},{n:'Canara Robeco SC',total:48,ov:15,uq:33},{n:'Kotak MC',total:58,ov:18,uq:40},{n:'Bajaj Flexi Cap',total:62,ov:22,uq:40},{n:'Mirae Eq Savings',total:38,ov:10,uq:28},{n:'ICICI Multi-Asset',total:55,ov:20,uq:35},{n:'Nippon MC',total:50,ov:18,uq:32},{n:'HDFC Mid Cap',total:46,ov:16,uq:30},{n:'HDFC Multi Cap',total:60,ov:24,uq:36}];
+function buildUB(){
+  const el=$('ub-chart');if(!el)return;
+  const mx=Math.max(...UB.map(b=>b.total));
+  el.innerHTML=UB.map(b=>`
+    <div style="display:grid;grid-template-columns:150px 1fr 44px;gap:8px;align-items:center;margin-bottom:8px">
+      <div style="font-size:.61rem;color:var(--t2);text-align:right;line-height:1.4">${b.n}<br><span style="font-family:var(--mono);font-size:.5rem;color:var(--t3)">${b.total} stocks</span></div>
+      <div class="ub-r" style="height:22px;background:var(--s5);border-radius:3px;overflow:hidden;display:flex;cursor:pointer" data-n="${b.n}" data-ov="${b.ov}" data-uq="${b.uq}" data-tot="${b.total}">
+        <div style="height:100%;width:${(b.ov/mx*100).toFixed(1)}%;background:var(--rd);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.52rem;color:rgba(255,255,255,.9)">${b.ov>3?b.ov:''}</div>
+        <div style="height:100%;width:${(b.uq/mx*100).toFixed(1)}%;background:var(--gn);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.52rem;color:rgba(255,255,255,.85)">${b.uq>3?b.uq:''}</div>
+      </div>
+      <div style="font-family:var(--mono);font-size:.58rem;color:var(--t3);text-align:right">${b.total}</div>
+    </div>`).join('')
+  +`<div style="display:flex;gap:1.4rem;margin-top:.9rem;font-family:var(--mono);font-size:.56rem"><span><span style="color:var(--rd)">■</span> Overlap with direct stocks</span><span><span style="color:var(--gn)">■</span> New exposure via MF</span></div>`;
+  el.addEventListener('mouseover',e=>{
+    const r=e.target.closest('.ub-r');if(!r)return;
+    showTT(e,`<strong style="color:var(--t1)">${r.dataset.n}</strong><br>Overlap: <strong style="color:var(--rd)">${r.dataset.ov}</strong><br>New exposure: <strong style="color:var(--gn)">${r.dataset.uq}</strong><br>Total: ${r.dataset.tot}`);
+  });
+  el.addEventListener('mouseout',e=>{if(!e.relatedTarget?.closest('#ub-chart'))hideTT();});
+}
+
+// ── TOOLTIP ───────────────────────────────────────────────────
+const TT=$('tt');
+function showTT(e,html){TT.innerHTML=html;TT.style.display='block';moveTT(e);}
+function moveTT(e){const x=e.clientX+14,y=e.clientY-10,w=TT.offsetWidth;TT.style.left=(x+w>window.innerWidth?x-w-28:x)+'px';TT.style.top=Math.max(8,y)+'px';}
+function hideTT(){TT.style.display='none';}
+document.addEventListener('mousemove',e=>{if(TT.style.display==='block')moveTT(e);});
+// Table row tooltips via delegation
+$('pages').addEventListener('mouseover',e=>{
+  const row=e.target.closest('.tbl tbody tr');if(!row)return;
+  const cells=row.querySelectorAll('td');if(cells.length<6)return;
+  const name=cells[0].textContent.trim().split('\n')[0];
+  if(!name||name==='Total'||name==='Fund')return;
+  let pl='',ret='';
+  cells.forEach(td=>{const t=td.textContent.trim();if((t.startsWith('+₹')||t.startsWith('-₹'))&&t.includes(','))pl=t;if(t.includes('%')&&(t.startsWith('+')||t.startsWith('-'))&&t.length<12)ret=t;});
+  if(!pl)return;
+  showTT(e,`<strong style="color:var(--t1)">${name}</strong><br>P/L: <span style="color:${pl.startsWith('-')?'var(--rd)':'var(--gn)'}">${pl}</span><br>Return: <span style="color:${ret.startsWith('-')?'var(--rd)':'var(--gn)'}">${ret||'—'}</span>`);
+});
+$('pages').addEventListener('mouseout',e=>{if(e.target.closest('.tbl tbody tr')&&!e.relatedTarget?.closest('.tbl tbody tr'))hideTT();});
+
+// ── DONUT ─────────────────────────────────────────────────────
+let donutInst=null;
+function buildDonut(vals,labels,colors,center){
+  const ctx=$('donut').getContext('2d');
+  if(donutInst)donutInst.destroy();
+  donutInst=new Chart(ctx,{type:'doughnut',data:{labels,datasets:[{data:vals,backgroundColor:colors,borderWidth:0,borderRadius:2,hoverOffset:4}]},options:{responsive:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{backgroundColor:'#132033',borderColor:'rgba(232,53,122,.2)',borderWidth:1,titleColor:'#A8B4C8',bodyColor:'#F4F6F9',padding:8,callbacks:{label:c=>`${c.label}: ${fC(c.raw)}`}}}}});
+  if($('donut-c'))$('donut-c').textContent=center;
+}
+
+// ── NAV + MEMBER SWITCH ───────────────────────────────────────
+let curPage='dashboard', curMem='RB';
+function nav(id,btn,title){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(b=>b.classList.remove('on'));
+  const p=$('p-'+id);if(p)p.classList.add('on');
+  if(btn)btn.classList.add('on');
+  if($('tb-title'))$('tb-title').textContent=title||id;
+  curPage=id;
+  renderPage(id);
+}
+function setMem(m,btn){
+  curMem=m;
+  document.querySelectorAll('.mb').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  const name=m==='FAM'?'Family Total':(MEMBER_NAME[m]||m);
+  if($('tb-mem'))$('tb-mem').textContent=name;
+  updateDashboard();
+  updateSidebar();
+}
+
+// ── PRINT ─────────────────────────────────────────────────────
+function printRep(){
+  const w=window.open('','_blank');
+  const t=lastFetch?lastFetch.toLocaleString('en-IN'):'07 May 2026';
+  w.document.write(`<html><head><title>ARKA Report</title><style>body{font-family:Arial,sans-serif;color:#333;padding:24px;max-width:960px}h1{color:#E8357A;font-size:18px}table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:12px}th{background:#f5f5f5;padding:6px;border-bottom:2px solid #ddd;text-align:left;font-weight:600}td{padding:5px 6px;border-bottom:1px solid #eee}.up{color:#27ae60}.dn{color:#e74c3c}.sm{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}.sc{background:#f9f9f9;padding:8px;border:1px solid #eee}.sv{font-size:15px;font-weight:700;color:#E8357A}.sl{font-size:9px;color:#888;margin-bottom:2px}.ft{margin-top:20px;padding-top:10px;border-top:1px solid #eee;font-size:9px;color:#999}</style></head><body>
+  <h1>ARKA — Family Portfolio Report</h1><p style="color:#888;font-size:11px">Generated: ${t} · All 17 accounts · © 2026 ARKA</p>
+  <div class="sm"><div class="sc"><div class="sl">Family Total</div><div class="sv">₹36.29 Cr+</div></div><div class="sc"><div class="sl">RB</div><div class="sv" style="color:#333">₹18.99 Cr</div></div><div class="sc"><div class="sl">NB</div><div class="sv" style="color:#333">₹9.78 Cr</div></div><div class="sc"><div class="sl">NANS+NIYU</div><div class="sv" style="color:#333">₹7.52 Cr</div></div></div>
+  <table><tr><th>Account</th><th>Member</th><th>Invested</th><th>Current</th><th>P/L</th><th>Return</th></tr>
+  <tr><td>Abakkus Emerging</td><td>RB</td><td>₹2.16 Cr</td><td>₹3.21 Cr</td><td class="up">+₹94.1L</td><td class="up">+43.5%</td></tr>
+  <tr><td>Axis Direct</td><td>NB</td><td>₹1.37 Cr</td><td>₹2.06 Cr</td><td class="up">+₹68.8L</td><td class="up">+50.3%</td></tr>
+  <tr><td>HDFC Securities</td><td>RB</td><td>₹5.04 Cr</td><td>₹5.64 Cr</td><td class="up">+₹60.5L</td><td class="up">+12.0%</td></tr>
+  <tr><td>Family Total</td><td>—</td><td>₹30.74 Cr</td><td>₹36.29 Cr+</td><td class="up">+₹5.55 Cr+</td><td class="up">+18.0%</td></tr></table>
+  <div class="ft">ARKA Stage 4 · Live NSE + mfapi.in · © 2026 ARKA</div>`);
+  w.document.close();setTimeout(()=>w.print(),500);
+}
+
+// ── TICKER INIT ───────────────────────────────────────────────
+function initTicker(){
+  const items=[{n:'COAL INDIA',p:'₹456.85',c:'+0.24%',u:true},{n:'ITC',p:'₹307.40',c:'-0.12%',u:false},{n:'GOLD BEES',p:'₹124.58',c:'+0.09%',u:true},{n:'TITAN',p:'₹4,294',c:'-0.31%',u:false},{n:'HDFCBANK',p:'₹796.05',c:'+0.54%',u:true},{n:'BSE',p:'₹3,929',c:'+0.87%',u:true},{n:'SARDA ENERGY',p:'₹593.95',c:'+1.9%',u:true},{n:'BHARTI AIRTEL',p:'₹1,826',c:'+1.2%',u:true},{n:'LAURUS LABS',p:'₹1,206',c:'+3.1%',u:true},{n:'CAMS',p:'₹842.50',c:'+0.79%',u:true}];
+  if($('ticker'))$('ticker').innerHTML=[...items,...items].map(it=>`<span class="tk"><span class="tk-n">${it.n}</span><span class="tk-v ${it.u?'up':'dn'}">${it.p}</span><span class="${it.u?'up':'dn'}">${it.c}</span></span>`).join('');
+}
+
+// ── AUTO REFRESH ──────────────────────────────────────────────
+function startRefresh(){setInterval(()=>{ if(!hdfc_auth_pending) fetchAllPrices(); }, 5*60*1000);}
+
+// ── INIT ─────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded',()=>{
+  const h=new Date().getHours();
+  const g=h<12?'morning':h<17?'afternoon':'evening';
+  if($('dash-date'))$('dash-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+
+  // Immediately populate fallback prices so dashboard renders right away
+  Object.entries(FALLBACK).forEach(([sym,price]) => { PRICES[sym]={price,chg:0,chgPct:0,isFallback:true}; });
+  MF.forEach(mf => {
+    const stmtNav = {
+      hdfc_def:27.928, kotak_mc:142.25, canara_sc:39.67, axis_sc:109.29,
+      icici_ma:809.54, bajaj_fc:14.985, hdfc_arb:32.158, icici_arb:36.01,
+      nippon_mc:303.67, mirae_es:20.979, hdfc_mc:18.605, hdfc_mid:202.148,
+      icici_gilt:105.50, sbi_gilt:67.02
+    };
+    NAVS[mf.id] = {nav: stmtNav[mf.id] || mf.avg, date:'07 May 2026', isFallback:true};
+  });
+  lastFetch = new Date();
+  if($('liveStatus'))$('liveStatus').textContent='Statement prices · 07 May 2026';
+
+  initTicker();
+  updateAll();
+  renderPage('dashboard');
+
+  // Check if HDFC redirected back with requestToken in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const reqToken  = urlParams.get('requestToken') || urlParams.get('request_token');
+  if(reqToken) {
+    // Complete auth automatically
+    if($('liveStatus')) $('liveStatus').textContent = 'Completing HDFC authentication...';
+    fetch(`/.netlify/functions/prices?action=set-token&requestToken=${reqToken}`)
+      .then(r => r.json())
+      .then(d => {
+        if(d.success) {
+          if($('liveStatus')) $('liveStatus').textContent = 'Authenticated! Fetching live prices...';
+          // Clean URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+          setTimeout(fetchAllPrices, 500);
+        } else {
+          console.log('Auth failed:', d.error);
+          fetchAllPrices().then(startRefresh);
+        }
+      })
+      .catch(() => fetchAllPrices().then(startRefresh));
+  } else {
+    // Normal startup
+    setTimeout(()=>{
+      fetchAllPrices().then(startRefresh).catch(()=>{
+        if($('tb-refresh'))$('tb-refresh').textContent='↻ Refresh';
+      });
+    }, 500);
+  }
+});
+</script>
+</body>
+</html>

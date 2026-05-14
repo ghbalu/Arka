@@ -1,0 +1,21 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/prices"
+  to = "/.netlify/functions/prices"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/navs"
+  to = "/.netlify/functions/navs"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/secmaster"
+  to = "/.netlify/functions/secmaster"
+  status = 200
+  force = true
