@@ -877,121 +877,95 @@ const STMT_NAVS = {
 // /api/prices and /api/navs are our own Netlify serverless functions
 // They run on Netlify's servers where Yahoo Finance + mfapi work fine
 
-const HDFC_API_KEY    = 'a642d4448e014a4293deebcdf8205057';
-const HDFC_API_SECRET = 'a68c1e9c86154a5fa6b6cec3d58c46d5';
-const HDFC_BASE       = 'https://developer.hdfcsec.com/oapi/v1';
-
-// NSE instrument tokens — verified 13 May 2026
-const NSE_TOKENS = {
-  ITC:1660, COALINDIA:20374, TITAN:3506, HDFCBANK:1333,
-  GOLDBEES:46109, TATACONSUM:3432, BSE:543066, CAMS:2908,
-  KOTAKBANK:1922, BHARTIARTL:10604, LAURUSLABS:19234, TCS:11536,
-  SARDAEN:4739, FEDERALBNK:1023, TITAGARH:3971, EMAMILTD:317,
-  BHEL:438, CYIENT:11483, SUNPHARMA:3351, NTPC:11630,
-  SBIN:3045, ANUP:542584, ICICIGI:541154,
-};
-const NSE_REV = Object.fromEntries(Object.entries(NSE_TOKENS).map(([s,t])=>[t,s]));
-
-async function getHDFCToken(requestToken) {
-  const r = await fetch(
-    `${HDFC_BASE}/access-token?api_key=${HDFC_API_KEY}&request_token=${requestToken}`,
-    {method:'POST', headers:{'Content-Type':'application/json'},
-     body:JSON.stringify({apiSecret: HDFC_API_SECRET})}
-  );
-  const d = await r.json();
-  return d.accessToken || d.access_token || null;
-}
-
-async function fetchLTPDirect(accessToken) {
-  const tokenList = Object.entries(NSE_TOKENS)
-    .map(([sym,tok]) => ({exchange:'NSE', token:String(tok)}));
-  const r = await fetch(
-    `${HDFC_BASE}/fetch-ltp?api_key=${HDFC_API_KEY}`,
-    {method:'PUT',
-     headers:{Authorization:accessToken,'Content-Type':'application/json'},
-     body:JSON.stringify({data:tokenList})}
-  );
-  return r.json();
-}
-
 async function fetchAllStocks(syms) {
   try {
+    const symStr = [...new Set(EQ.map(e=>e.sym))].join(',');
     const storedToken = sessionStorage.getItem('hdfc_access_token');
     const tokenDate   = sessionStorage.getItem('hdfc_token_date');
+    // Check if token is from today
     const tokenValid  = storedToken && tokenDate === new Date().toDateString();
-
-    if(!tokenValid) {
-      showConnectButton();
+    const tokenParam  = tokenValid ? `&hdfc_token=${encodeURIComponent(storedToken)}` : '';
+    const r = await fetch(`/.netlify/functions/prices?symbols=${symStr}${tokenParam}`);
+    if(!r.ok) { console.log('ARKA: prices error', r.status); return {}; }
+    const d = await r.json();
+    if(d.auth_required) {
+      console.log('ARKA: HDFC auth required');
+      showConnectButton(d.login_url);
       return {};
     }
-
-    const d = await fetchLTPDirect(storedToken);
-    if(d.meta?.statusCode !== 'OK') {
-      // Token expired — clear it and show connect button
-      sessionStorage.removeItem('hdfc_access_token');
-      sessionStorage.removeItem('hdfc_token_date');
-      showConnectButton();
-      return {};
+    if(d.count > 0) {
+      hideConnectButton();
+      console.log('ARKA: Got', d.count, 'live prices from HDFC InvestRight');
+      return d.prices || {};
     }
-
-    const prices = {};
-    (d.data||[]).forEach(item => {
-      const sym = NSE_REV[parseInt(item.token)];
-      if(!sym) return;
-      const ltp  = parseFloat(item.ltp);
-      const prev = parseFloat(item.prev_close);
-      prices[sym] = {
-        price:   ltp,
-        chg:     parseFloat((ltp-prev).toFixed(2)),
-        chgPct:  parseFloat(((ltp-prev)/prev*100).toFixed(2)),
-        isFallback: false,
-      };
-    });
-
-    hideConnectButton();
-    console.log('ARKA: Got', Object.keys(prices).length, 'live prices from HDFC');
-    return prices;
-
-  } catch(e) {
-    console.log('ARKA: fetchAllStocks error:', e.message);
     return {};
+  } catch(e) { console.log('ARKA: prices fetch error:', e.message); return {}; }
+}
+
+async function exchangeTokenDirect(requestToken) {
+  const API_KEY    = 'a642d4448e014a4293deebcdf8205057';
+  const API_SECRET = 'a68c1e9c86154a5fa6b6cec3d58c46d5';
+  const url = `https://developer.hdfcsec.com/oapi/v1/access-token?api_key=${API_KEY}&request_token=${requestToken}`;
+  try {
+    const r = await fetch(url, {
+      method:  'POST',
+      headers: {'Content-Type':'application/json'},
+      body:    JSON.stringify({apiSecret: API_SECRET})
+    });
+    const d = await r.json();
+    console.log('Direct token exchange response:', JSON.stringify(d).substring(0,200));
+    return d.accessToken || d.access_token || d.data?.accessToken || null;
+  } catch(e) {
+    console.log('Direct exchange error:', e.message);
+    return null;
   }
 }
 
 function startHDFCLogin() {
-  const loginUrl = `https://developer.hdfcsec.com/oapi/v1/login?api_key=${HDFC_API_KEY}`;
+  const loginUrl = 'https://developer.hdfcsec.com/oapi/v1/login?api_key=a642d4448e014a4293deebcdf8205057';
   const btn = document.getElementById('hdfc-topbar-btn');
   if(btn) btn.textContent = '⏳ Waiting...';
   if($('liveStatus')) $('liveStatus').textContent = 'Waiting for HDFC login...';
-
-  const w = window.open(loginUrl, 'HDFC', 'width=520,height=620,left=400,top=100');
+  const w = window.open(loginUrl, 'HDFC Login', 'width=520,height=620,left=400,top=100');
   const poll = setInterval(async () => {
     try {
-      if(!w || w.closed) { clearInterval(poll); if(btn) btn.textContent='⚡ Connect Live'; return; }
+      if(!w || w.closed) { clearInterval(poll); if(btn) btn.textContent = '⚡ Connect Live'; return; }
       const url = w.location.href;
-      if(url.includes('requestToken=')) {
+      if(url.includes('requestToken=') || url.includes('prismatic-custard')) {
         clearInterval(poll);
-        const reqToken = new URLSearchParams(url.split('?')[1]).get('requestToken');
+        const urlParams  = new URLSearchParams(url.split('?')[1] || '');
+        const reqToken   = urlParams.get('requestToken');
         w.close();
         if(!reqToken) return;
         if(btn) btn.textContent = '⏳ Authenticating...';
         if($('liveStatus')) $('liveStatus').textContent = 'Authenticating...';
 
-        // Exchange token directly from browser
-        const accessToken = await getHDFCToken(reqToken);
+        // Try direct browser exchange first (instant, no server roundtrip)
+        let accessToken = await exchangeTokenDirect(reqToken);
+
+        // Fallback to Netlify function if direct fails
+        if(!accessToken) {
+          console.log('Direct exchange failed, trying Netlify function...');
+          try {
+            const r = await fetch(`/.netlify/functions/prices?action=set-token&requestToken=${reqToken}`);
+            const d = await r.json();
+            accessToken = d.accessToken || null;
+          } catch(e) { console.log('Netlify fallback failed:', e.message); }
+        }
+
         if(accessToken) {
           sessionStorage.setItem('hdfc_access_token', accessToken);
-          sessionStorage.setItem('hdfc_token_date', new Date().toDateString());
-          if(btn) { btn.textContent='✓ Live'; btn.style.color='var(--gn)'; btn.style.borderColor='rgba(45,216,132,.3)'; btn.style.background='var(--gnb)'; }
+          sessionStorage.setItem('hdfc_token_date',   new Date().toDateString());
+          if(btn) { btn.textContent='✓ Live Connected'; btn.style.color='var(--gn)'; btn.style.borderColor='rgba(45,216,132,.3)'; btn.style.background='var(--gnb)'; }
           if($('liveStatus')) $('liveStatus').textContent = 'Fetching live prices...';
           hdfc_auth_pending = false;
           setTimeout(fetchAllPrices, 300);
         } else {
           if(btn) btn.textContent = '⚡ Connect Live';
-          alert('Auth failed — please try again');
+          alert('Authentication failed — please try again');
         }
       }
-    } catch(e) { /* cross-origin — normal */ }
+    } catch(e) { /* cross-origin before redirect — normal */ }
   }, 800);
 }
 
@@ -1019,7 +993,7 @@ function showConnectButton(loginUrl) {
             const token = urlParams.get('request_token');
             if(token) {
               if($('liveStatus')) $('liveStatus').textContent = 'Authenticating...';
-              await Promise.resolve({success:false});
+              await fetch(`/.netlify/functions/prices?action=set-token&request_token=${token}`);
               if($('liveStatus')) $('liveStatus').textContent = 'Authenticated! Fetching live prices...';
               setTimeout(fetchAllPrices, 500);
             }
@@ -1039,34 +1013,23 @@ function hideConnectButton() {
 }
 
 async function fetchAllNavs() {
-  // Fetch MF NAVs directly from mfapi.in (no server needed - CORS open)
-  const results = {};
-  await Promise.allSettled(MF.map(async mf => {
+  const urls = [
+    '/.netlify/functions/navs',
+    '/api/navs',
+  ];
+  for(const url of urls) {
     try {
-      const info = MF_SEARCH_TERMS[mf.id];
-      if(!info) return;
-      const r = await fetch(
-        `https://api.mfapi.in/mf/search?q=${encodeURIComponent(info.q)}`
-      );
-      if(!r.ok) return;
-      const funds = await r.json();
-      for(const fund of (funds||[]).slice(0,5)) {
-        try {
-          const r2 = await fetch(`https://api.mfapi.in/mf/${fund.schemeCode}/latest`);
-          if(!r2.ok) continue;
-          const d = await r2.json();
-          const nav = parseFloat(d?.data?.[0]?.nav);
-          if(!isNaN(nav) && nav >= info.min && nav <= info.max) {
-            results[mf.id] = {nav, date: d?.data?.[0]?.date || '—'};
-            break;
-          }
-        } catch {}
-      }
-    } catch {}
-  }));
-  const count = Object.keys(results).length;
-  console.log('ARKA: Got', count, 'live NAVs');
-  return results;
+      console.log('ARKA: Fetching NAVs from', url);
+      const r = await fetch(url);
+      if(!r.ok) { console.log('ARKA: navs error', r.status, 'trying next...'); continue; }
+      const d = await r.json();
+      console.log('ARKA: Got', d.count, 'live NAVs');
+      if(d.count > 0) return d.navs || {};
+    } catch(e) {
+      console.log('ARKA: navs fetch error:', e.message);
+    }
+  }
+  return {};
 }
 
 async function fetchFX() {
@@ -1858,7 +1821,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   if(reqToken) {
     // Complete auth automatically
     if($('liveStatus')) $('liveStatus').textContent = 'Completing HDFC authentication...';
-    Promise.resolve({success:false})
+    fetch(`/.netlify/functions/prices?action=set-token&requestToken=${reqToken}`)
       .then(r => r.json())
       .then(d => {
         if(d.success) {
