@@ -885,7 +885,7 @@ async function fetchAllStocks(syms) {
     // Check if token is from today
     const tokenValid  = storedToken && tokenDate === new Date().toDateString();
     const tokenParam  = tokenValid ? `&hdfc_token=${encodeURIComponent(storedToken)}` : '';
-    const r = await fetch(`/.netlify/functions/prices?symbols=${symStr}${tokenParam}`);
+    const r = await fetch(`https://arka-prices.balur7.workers.dev?symbols=${symStr}${tokenParam}`);
     if(!r.ok) { console.log('ARKA: prices error', r.status); return {}; }
     const d = await r.json();
     if(d.auth_required) {
@@ -947,7 +947,7 @@ function startHDFCLogin() {
         if(!accessToken) {
           console.log('Direct exchange failed, trying Netlify function...');
           try {
-            const r = await fetch(`/.netlify/functions/prices?action=set-token&requestToken=${reqToken}`);
+            const r = await fetch(`https://arka-prices.balur7.workers.dev?action=set-token&requestToken=${reqToken}`);
             const d = await r.json();
             accessToken = d.accessToken || null;
           } catch(e) { console.log('Netlify fallback failed:', e.message); }
@@ -993,7 +993,7 @@ function showConnectButton(loginUrl) {
             const token = urlParams.get('request_token');
             if(token) {
               if($('liveStatus')) $('liveStatus').textContent = 'Authenticating...';
-              await fetch(`/.netlify/functions/prices?action=set-token&request_token=${token}`);
+              await fetch(`https://arka-prices.balur7.workers.dev?action=set-token&request_token=${token}`);
               if($('liveStatus')) $('liveStatus').textContent = 'Authenticated! Fetching live prices...';
               setTimeout(fetchAllPrices, 500);
             }
@@ -1014,8 +1014,8 @@ function hideConnectButton() {
 
 async function fetchAllNavs() {
   const urls = [
-    '/.netlify/functions/navs',
-    '/api/navs',
+    'https://arka-prices.balur7.workers.dev?action=navs',
+    'https://arka-prices.balur7.workers.dev?action=navs',
   ];
   for(const url of urls) {
     try {
@@ -1821,7 +1821,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   if(reqToken) {
     // Complete auth automatically
     if($('liveStatus')) $('liveStatus').textContent = 'Completing HDFC authentication...';
-    fetch(`/.netlify/functions/prices?action=set-token&requestToken=${reqToken}`)
+    fetch(`https://arka-prices.balur7.workers.dev?action=set-token&requestToken=${reqToken}`)
       .then(r => r.json())
       .then(d => {
         if(d.success) {
