@@ -884,7 +884,7 @@ async function fetchAllStocks(syms) {
     const tokenDate   = sessionStorage.getItem('hdfc_token_date');
     // Check if token is from today
     const tokenValid  = storedToken && tokenDate === new Date().toDateString();
-    const tokenParam  = tokenValid ? `&hdfc_token=${encodeURIComponent(storedToken)}` : '';
+    const tokenParam  = tokenValid ? `&token=${encodeURIComponent(storedToken)}` : '';
     const r = await fetch(`https://arka-prices.balur7.workers.dev?symbols=${symStr}${tokenParam}`);
     if(!r.ok) { console.log('ARKA: prices error', r.status); return {}; }
     const d = await r.json();
@@ -1013,21 +1013,24 @@ function hideConnectButton() {
 }
 
 async function fetchAllNavs() {
-  const urls = [
-    'https://arka-prices.balur7.workers.dev?action=navs',
-    'https://arka-prices.balur7.workers.dev?action=navs',
-  ];
-  for(const url of urls) {
-    try {
-      console.log('ARKA: Fetching NAVs from', url);
-      const r = await fetch(url);
-      if(!r.ok) { console.log('ARKA: navs error', r.status, 'trying next...'); continue; }
-      const d = await r.json();
-      console.log('ARKA: Got', d.count, 'live NAVs');
-      if(d.count > 0) return d.navs || {};
-    } catch(e) {
-      console.log('ARKA: navs fetch error:', e.message);
+  const ids = MF.map(m => m.sc).join(',');
+  const url = 'https://arka-prices.balur7.workers.dev?action=navs&ids=' + ids;
+  try {
+    console.log('ARKA: Fetching NAVs from', url);
+    const r = await fetch(url);
+    if(!r.ok) { console.log('ARKA: navs error', r.status); return {}; }
+    const d = await r.json();
+    console.log('ARKA: Got', Array.isArray(d) ? d.length : 0, 'live NAVs');
+    if(Array.isArray(d) && d.length > 0) {
+      const navMap = {};
+      d.forEach(item => {
+        const mf = MF.find(m => String(m.sc) === String(item.id));
+        if(mf && item.nav) navMap[mf.id] = {nav: parseFloat(item.nav), date: item.date, isFallback: false};
+      });
+      return navMap;
     }
+  } catch(e) {
+    console.log('ARKA: navs fetch error:', e.message);
   }
   return {};
 }
